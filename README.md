@@ -4,67 +4,143 @@
 
 # haraka-plugin-spf
 
-Clone me, to create a new Haraka plugin!
+===
 
-# Template Instructions
+This plugin implements RFC 4408 Sender Policy Framework (SPF)
+See the [Wikipedia article on SPF](http://en.wikipedia.org/wiki/Sender_Policy_Framework) for details.
 
-These instructions will not self-destruct after use. Use and destroy.
+By default this plugin with only add trace Received-SPF headers to a message.
+To make it reject mail then you will need to enable the relevant options below.
+`[deny]helo_fail` and `[deny]mfrom_fail` are the closest match for the intent
+of SPF but you will need to whitelist any hosts forwarding mail from another
+domain whilst preserving the original return-path.
 
-See also, [How to Write a Plugin](https://github.com/haraka/Haraka/wiki/Write-a-Plugin) and [Plugins.md](https://github.com/haraka/Haraka/blob/master/docs/Plugins.md) for additional plugin writing information.
+Configuration
+-------------
 
-## Create a new repo for your plugin
+This plugin uses spf.ini for configuration and the following options are
+available:
 
-Haraka plugins are named like `haraka-plugin-something`. All the namespace after `haraka-plugin-` is yours for the taking. Please check the [Plugins](https://github.com/haraka/Haraka/blob/master/Plugins.md) page and a Google search to see what plugins already exist.
+    [relay]
+    context=sender   (default: sender)
 
-Once you've settled on a name, create the GitHub repo. On the repo's main page, click the _Clone or download_ button and copy the URL. Then paste that URL into a local ENV variable with a command like this:
+On connections with relaying privileges (MSA or mail relay), it is often
+desirable to evaluate SPF from the context of Haraka's public IP(s), in the
+same fashion the next mail server will evaluate it when we send to them.
+In that use case, Haraka should use context=myself.
 
-```sh
-export MY_GITHUB_ORG=haraka
-export MY_PLUGIN_NAME=haraka-plugin-SOMETHING
-```
+    * context=sender    evaluate SPF based on the sender (connection.remote.ip)
+    * context=myself    evaluate SPF based on Haraka's public IP
 
-Clone and rename the spf repo:
+The rest of the optional settings (disabled by default) permit deferring or
+denying mail from senders whose SPF fails the checks.
 
-```sh
-git clone git@github.com:haraka/haraka-plugin-spf.git
-mv haraka-plugin-spf $MY_PLUGIN_NAME
-cd $MY_PLUGIN_NAME
-git remote rm origin
-git remote add origin "git@github.com:$MY_GITHUB_ORG/$MY_PLUGIN_NAME.git"
-```
+Additional settings allow you to control the small things (defaults are shown):
 
-Now you'll have a local git repo to begin authoring your plugin
+    ; The lookup timeout, in seconds. Better set it to something much lower than this.
+    lookup_timeout = 29
 
-## rename boilerplate
+    ; bypass hosts that match these conditions
+    [skip]
+    ; hosts that relay through us
+    relaying = false
+    ; hosts that are SMTP AUTH'ed
+    auth = false
 
-Replaces all uses of the word `spf` with your plugin's name.
+There's a special setting that would allow the plugin to emit a funny explanation text on SPF DENY, essentially meant to be visible to end-users that will receive the bounce. The text is `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}` and is enabled by:
 
-./redress.sh [something]
+    [deny]
+    openspf_text = true
+    
+    ; in case you DENY on failing SPF on hosts that are relaying (but why?)
+    [deny_relay]
+    openspf_text = true
 
-You'll then be prompted to update package.json and then force push this repo onto the GitHub repo you've created earlier.
+### Things to Know
+
+* Most senders do not publish SPF records for their mail server *hostname*,
+  which means that the SPF HELO test rarely passes. During observation in 2014,
+  more spam senders have valid SPF HELO than ham senders. If you expect very
+  little from SPF HELO validation, you might still be disappointed.
+
+* Enabling error deferrals will cause excessive delays and perhaps bounced
+  mail for senders with broken DNS. Enable this only if you are willing to
+  delay and sometimes lose valid mail.
+
+* Broken SPF records by valid senders are common. Keep that in mind when
+  considering denial of SPF error results. If you deny on error, budget
+  time for instructing senders on how to correct their SPF records so they
+  can email you.
+
+* The only deny option most sites should consider is `mfrom_fail`. That will
+  reject messages that explicitely fail SPF tests. SPF failures have a high
+  correlation with spam. However, up to 10% of ham transits forwarders and/or
+  email lists which frequently break SPF. SPF results are best used as inputs
+  to other plugins such as DMARC, [spamassassin](http://haraka.github.io/manual/plugins/spamassassin.html), and [karma](http://haraka.github.io/manual/plugins/karma.html).
+
+* Heed well the implications of SPF, as described in [RFC 4408](http://tools.ietf.org/html/rfc4408#section-9.3)
+
+    [defer]
+    helo_temperror
+    mfrom_temperror
+
+    [deny]
+    helo_none
+    helo_softfail
+    helo_fail
+    helo_permerror
+
+    mfrom_none
+    mfrom_softfail
+    mfrom_fail
+    mfrom_permerror
+    
+    openspf_text
+
+    ; SPF settings used when connection.relaying=true
+    [defer_relay]
+    helo_temperror
+    mfrom_temperror
+
+    [deny_relay]
+    helo_none
+    helo_softfail
+    helo_fail
+    helo_permerror
+
+    mfrom_none
+    mfrom_softfail
+    mfrom_fail
+    mfrom_permerror
+    
+    openspf_text
 
 
-# Add your content here
+Testing
+-------
 
-## INSTALL
+This plugin also provides a command-line test tool that can be used to debug SPF issues or to check results.
 
-```sh
-cd /path/to/local/haraka
-npm install haraka-plugin-spf
-echo "spf" >> config/plugins
-service haraka restart
-```
+To check the SPF record for a domain:
 
-### Configuration
+````
+# spf --ip 1.2.3.4 --domain fsl.com
+ip=1.2.3.4 helo="" domain="fsl.com" result=Fail
+````
 
-If the default configuration is not sufficient, copy the config file from the distribution into your haraka config dir and then modify it:
+To check the SPF record for a HELO/EHLO name:
 
-```sh
-cp node_modules/haraka-plugin-spf/config/spf.ini config/spf.ini
-$EDITOR config/spf.ini
-```
+````
+# spf --ip 1.2.3.4 --helo foo.bar.com
+ip=1.2.3.4 helo="foo.bar.com" domain="" result=None
+````
 
-## USAGE
+You can add `--debug` to the option arguments to see a full trace of the SPF processing.
+
+### SPF Resource Record Type
+
+Node does not support the SPF DNS Resource Record type. Only TXT records are
+checked. This is a non-issue as < 1% (as of 2014) of SPF records use the SPF RR type. Due to lack of adoption, SPF has deprecated the SPF RR type.
 
 
 <!-- leave these buried at the bottom of the document -->
