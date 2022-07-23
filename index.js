@@ -1,6 +1,6 @@
 // spf
 
-const SPF = require('./spf').SPF;
+const SPF = require('./lib/spf').SPF;
 const net_utils = require('haraka-net-utils');
 const DSN = require('haraka-dsn');
 

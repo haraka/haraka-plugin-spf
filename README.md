@@ -4,8 +4,6 @@
 
 # haraka-plugin-spf
 
-===
-
 This plugin implements RFC 4408 Sender Policy Framework (SPF)
 See the [Wikipedia article on SPF](http://en.wikipedia.org/wiki/Sender_Policy_Framework) for details.
 

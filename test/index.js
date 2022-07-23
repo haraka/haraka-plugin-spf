@@ -7,7 +7,7 @@ const Address      = require('address-rfc2821').Address;
 const constants    = require('haraka-constants');
 const fixtures     = require('haraka-test-fixtures')
 
-const SPF = require('../spf').SPF;
+const SPF = require('../lib/spf').SPF;
 const spf = new SPF();
 
 beforeEach(function () {

@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const SPF = require('../spf').SPF;
+const SPF = require('../lib/spf').SPF;
 
 SPF.prototype.log_debug = () => {};  // noop, hush debug output
 
@@ -35,6 +35,7 @@ describe('SPF', function () {
   })
 
   it('mod_redirect, false', function (done) {
+    this.timeout=4000
     this.SPF.count=0;
     this.SPF.ip='212.70.129.94';
     this.SPF.mail_from='fraud@aexp.com';
