@@ -1,13 +1,13 @@
 'use strict'
 
 exports.register = function () {
-  this.load_template_ini()
+  this.load_spf_ini()
 }
 
-exports.load_template_ini = function () {
+exports.load_spf_ini = function () {
   const plugin = this
 
-  plugin.cfg = plugin.config.get('template.ini', {
+  plugin.cfg = plugin.config.get('spf.ini', {
     booleans: [
       '+enabled',               // plugin.cfg.main.enabled=true
       '-disabled',              // plugin.cfg.main.disabled=false

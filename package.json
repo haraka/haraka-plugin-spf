@@ -1,5 +1,5 @@
 {
-  "name": "haraka-plugin-template",
+  "name": "haraka-plugin-spf",
   "version": "1.0.3",
   "description": "Haraka plugin that frobnicates email connections",
   "main": "index.js",
@@ -11,19 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/haraka/haraka-plugin-template.git"
+    "url": "git+https://github.com/haraka/haraka-plugin-spf.git"
   },
   "keywords": [
     "haraka",
     "plugin",
-    "template"
+    "spf"
   ],
   "author": "Welcome Member <happy-haraka-hacker@example.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/haraka/haraka-plugin-template/issues"
+    "url": "https://github.com/haraka/haraka-plugin-spf/issues"
   },
-  "homepage": "https://github.com/haraka/haraka-plugin-template#readme",
+  "homepage": "https://github.com/haraka/haraka-plugin-spf#readme",
   "devDependencies": {
     "eslint": "8",
     "eslint-plugin-haraka": "*",
