@@ -4,8 +4,8 @@
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
   "scripts": {
-    "lint": "npx eslint *.js test",
-    "lintfix": "npx eslint --fix *.js test",
+    "lint": "npx eslint *.js bin/spf lib test",
+    "lintfix": "npx eslint --fix *.js bin/spf lib test",
     "versions": "npx dependency-version-checker check",
     "test": "npx mocha"
   },
