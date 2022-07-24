@@ -25,62 +25,56 @@ describe('SPF', function () {
     assert.equal(10, this.SPF.LIMIT);
   })
 
-  it('mod_redirect, true', function (done) {
+  it('mod_redirect, true', async function () {
     this.SPF.been_there['example.com'] = true;
-    this.SPF.mod_redirect('example.com', (err, rc) => {
-      assert.equal(null, err);
-      assert.equal(1, rc);
-      done()
-    })
+    const rc = await this.SPF.mod_redirect('example.com')
+    // assert.equal(null, err);
+    assert.equal(1, rc);
   })
 
-  it('mod_redirect, false', function (done) {
+  it('mod_redirect, false', async function () {
     this.timeout=4000
     this.SPF.count=0;
     this.SPF.ip='212.70.129.94';
     this.SPF.mail_from='fraud@aexp.com';
-    this.SPF.mod_redirect('aexp.com', (err, rc) => {
-      assert.equal(null, err);
-      switch (rc) {
-        case 7:
-          // from time to time (this is the third time we've seen it,
-          // American Express publishes an invalid SPF record which results
-          // in a PERMERROR. Ignore it.
-          assert.equal(rc, 7, "aexp SPF record is broken again");
-          break;
-        case 6:
-          assert.equal(rc, 6, "temporary (likely DNS timeout) error");
-          break;
-        default:
-          assert.equal(rc, 3);
-      }
-      done()
-    })
+    const rc = await this.SPF.mod_redirect('aexp.com')
+    // assert.equal(null, err);
+    switch (rc) {
+      case 7:
+        // from time to time (this is the third time we've seen it,
+        // American Express publishes an invalid SPF record which results
+        // in a PERMERROR. Ignore it.
+        assert.equal(rc, 7, "aexp SPF record is broken again");
+        break;
+      case 6:
+        assert.equal(rc, 6, "temporary (likely DNS timeout) error");
+        break;
+      default:
+        assert.equal(rc, 3);
+    }
   })
 
-  it('check_host, gmail.com, fail', function (done) {
+  it('check_host, gmail.com, fail', async function () {
+    this.timeout = 3000;
     this.SPF.count=0;
-    this.SPF.check_host('212.70.129.94', 'gmail.com', 'haraka.mail@gmail.com', (err, rc) => {
-      assert.equal(null, err);
-      switch (rc) {
-        case 1:
-          assert.equal(rc, 1, "none");
-          console.log('Why do DNS lookup fail to find gmail SPF record on GitHub Actions?');
-          break;
-        case 3:
-          assert.equal(rc, 3, "fail");
-          break;
-        case 4:
-          assert.equal(rc, 4, "soft fail");
-          break;
-        case 7:
-          assert.equal(rc, 7, "perm error");
-          break;
-        default:
-          assert.equal(rc, 4)
-      }
-      done()
-    })
+    const rc = await this.SPF.check_host('212.70.129.94', 'gmail.com', 'haraka.mail@gmail.com')
+    switch (rc) {
+      case 1:
+        assert.equal(rc, 1, "none");
+        console.log('Why do DNS lookup fail to find gmail SPF record on GitHub Actions?');
+        break;
+      case 3:
+        assert.equal(rc, 3, "fail");
+        break;
+      case 4:
+        assert.equal(rc, 4, "soft fail");
+        break;
+      case 7:
+        assert.equal(rc, 7, "perm error");
+        break;
+      default:
+        assert.equal(rc, 4)
+    }
   })
 
   it('valid_ip, true', function (done) {

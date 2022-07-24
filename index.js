@@ -81,7 +81,7 @@ exports.load_spf_ini = function () {
   plugin.cfg.lookup_timeout = plugin.cfg.main.lookup_timeout || plugin.timeout - 1;
 }
 
-exports.helo_spf = function (next, connection, helo) {
+exports.helo_spf = async function (next, connection, helo) {
   const plugin = this;
 
   // bypass auth'ed or relay'ing hosts if told to
@@ -113,16 +113,13 @@ exports.helo_spf = function (next, connection, helo) {
   const timer = setTimeout(() => {
     timeout = true;
     connection.loginfo(plugin, 'timeout');
-    return next();
+    next();
   }, plugin.cfg.lookup_timeout * 1000);
 
-  spf.check_host(connection.remote.ip, helo, null, (err, result) => {
+  try {
+    const result = await spf.check_host(connection.remote.ip, helo, null)
     if (timer) clearTimeout(timer);
     if (timeout) return;
-    if (err) {
-      connection.logerror(plugin, err);
-      return next();
-    }
     const host = connection.hello.host;
     plugin.log_result(connection, 'helo', host, `postmaster@${host}`, spf.result(result));
 
@@ -134,11 +131,14 @@ exports.helo_spf = function (next, connection, helo) {
       emit: true,
     });
     if (spf.result(result) === 'Pass') connection.results.add(plugin, { pass: host });
-    next();
-  });
+  }
+  catch (err) {
+    connection.logerror(plugin, err);
+  }
+  next();
 }
 
-exports.hook_mail = function (next, connection, params) {
+exports.hook_mail = async function (next, connection, params) {
   const plugin = this;
 
   const txn = connection?.transaction;
@@ -216,41 +216,46 @@ exports.hook_mail = function (next, connection, params) {
 
   // typical inbound (!relay)
   if (!connection.relaying) {
-    return spf.check_host(connection.remote.ip, host, mfrom, ch_cb);
+    const result = await spf.check_host(connection.remote.ip, host, mfrom)
+    ch_cb(result)
+    return
   }
 
   // outbound (relaying), context=sender
   if (plugin.cfg.relay.context === 'sender') {
-    return spf.check_host(connection.remote.ip, host, mfrom, ch_cb);
+    const res = await spf.check_host(connection.remote.ip, host, mfrom);
+    ch_cb(res)
+    return
   }
 
-  // outbound (relaying), context=myself
-  net_utils.get_public_ip((e, my_public_ip) => {
+  try {
+    // outbound (relaying), context=myself
+    const my_public_ip = await net_utils.get_public_ip()
+
     // We always check the client IP first, because a relay
     // could be sending inbound mail from a non-local domain
     // which could case an incorrect SPF Fail result if we
     // check the public IP first, so we only check the public
     // IP if the client IP returns a result other than 'Pass'.
-    spf.check_host(connection.remote.ip, host, mfrom, (err, result) => {
-      let spf_result;
-      if (result) {
-        spf_result = spf.result(result).toLowerCase();
-      }
-      if (err || (spf_result && spf_result !== 'pass')) {
-        if (e) return ch_cb(e);  // Error looking up public IP
+    const result = await spf.check_host(connection.remote.ip, host, mfrom)
 
-        if (!my_public_ip) {
-          return ch_cb(new Error(`failed to discover public IP`));
-        }
-        spf = new SPF();
-        spf.check_host(my_public_ip, host, mfrom, (er, r) => {
-          ch_cb(er, r, my_public_ip);
-        });
-        return;
+    let spf_result;
+    if (result) spf_result = spf.result(result).toLowerCase();
+
+    if (spf_result && spf_result !== 'pass') {
+      if (!my_public_ip) {
+        return ch_cb(new Error(`failed to discover public IP`));
       }
-      ch_cb(err, result, connection.remote.ip);
-    });
-  });
+      spf = new SPF();
+      const r = await spf.check_host(my_public_ip, host, mfrom)
+      ch_cb(null, r, my_public_ip);
+      return;
+    }
+    ch_cb(null, result, connection.remote.ip);
+  }
+  catch (err) {
+    ch_cb(err)
+  }
 }
 
 exports.log_result = function (connection, scope, host, mfrom, result, ip) {
