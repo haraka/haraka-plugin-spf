@@ -154,7 +154,7 @@ exports.hook_mail = async function (next, connection, params) {
   // For messages from private IP space...
   if (connection.remote?.is_private) {
     if (!connection.relaying) return next();
-    if (connection.relaying && plugin.cfg.relay?.context !== 'myself') {
+    if (plugin.cfg.relay?.context !== 'myself') {
       txn.results.add(plugin, {skip: 'host(private_ip)'});
       return next(CONT, 'envelope from private IP space');
     }
@@ -214,30 +214,21 @@ exports.hook_mail = async function (next, connection, params) {
     plugin.return_results(next, connection, spf, 'mfrom', result, mfrom);
   }
 
-  // typical inbound (!relay)
-  if (!connection.relaying) {
-    const result = await spf.check_host(connection.remote.ip, host, mfrom)
-    ch_cb(result)
-    return
-  }
-
-  // outbound (relaying), context=sender
-  if (plugin.cfg.relay.context === 'sender') {
-    const res = await spf.check_host(connection.remote.ip, host, mfrom);
-    ch_cb(res)
-    return
-  }
-
   try {
+    // Always check the client IP first. A relay could be sending inbound mail
+    // from a non-local domain, which could case an incorrect SPF Fail result
+    // if we check the public IP first. Only check the public IP if the
+    // client IP returns a result other than 'Pass'.
+    const result = await spf.check_host(connection.remote.ip, host, mfrom)
+
+    // typical inbound (!relay)
+    if (!connection.relaying) return ch_cb(result)
+
+    // outbound (relaying), context=sender
+    if (plugin.cfg.relay.context === 'sender') return ch_cb(result)
+
     // outbound (relaying), context=myself
     const my_public_ip = await net_utils.get_public_ip()
-
-    // We always check the client IP first, because a relay
-    // could be sending inbound mail from a non-local domain
-    // which could case an incorrect SPF Fail result if we
-    // check the public IP first, so we only check the public
-    // IP if the client IP returns a result other than 'Pass'.
-    const result = await spf.check_host(connection.remote.ip, host, mfrom)
 
     let spf_result;
     if (result) spf_result = spf.result(result).toLowerCase();
@@ -248,8 +239,7 @@ exports.hook_mail = async function (next, connection, params) {
       }
       spf = new SPF();
       const r = await spf.check_host(my_public_ip, host, mfrom)
-      ch_cb(null, r, my_public_ip);
-      return;
+      return ch_cb(null, r, my_public_ip);
     }
     ch_cb(null, result, connection.remote.ip);
   }
