@@ -314,7 +314,7 @@ exports.save_to_header = (connection, spf, result, mfrom, host, id, ip) => {
 exports.skip_hosts = function (connection) {
   const plugin = this;
 
-  const skip = plugin.cfg.skip;
+  const skip = plugin?.cfg?.skip;
   if (skip) {
     if (skip.relaying && connection.relaying) return 'relay';
     if (skip.auth && connection.notes.auth_user) return 'auth';
