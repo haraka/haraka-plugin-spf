@@ -5,6 +5,7 @@ const SPF = require('../lib/spf').SPF;
 SPF.prototype.log_debug = () => {};  // noop, hush debug output
 
 
+
 beforeEach(function () {
   this.SPF = new SPF()
 })
