@@ -1,6 +1,15 @@
 
 ### Unreleased
 
+### [1.1.0] - 2022-12-17
+
+- spf: use async/await dns
+- replace many callbacks with async/await
+- make check_host more linear
+- ci(publish): only when package.json bumped
+- index: safeguard cfg path with optional chaining, fixes #2
+- dep(nopt): bump 6 -> 7
+
 
 ### [1.0.1] - 2022-07-23
 
