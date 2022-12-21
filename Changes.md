@@ -5,7 +5,7 @@
 ### [1.1.2] - 2022-12-21
 
 - dep: depend on net-utils 1.5.0
-- 
+- refactor: convert loop to for...of
 
 
 ### [1.1.0] - 2022-12-17
