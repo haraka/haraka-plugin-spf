@@ -1,6 +1,13 @@
 
 ### Unreleased
 
+
+### [1.1.2] - 2022-12-21
+
+- dep: depend on net-utils 1.5.0
+- 
+
+
 ### [1.1.0] - 2022-12-17
 
 - spf: use async/await dns
@@ -23,3 +30,4 @@
 
 
 [1.0.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.0.1
+[1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.2

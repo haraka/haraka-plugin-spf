@@ -38,8 +38,8 @@ describe('SPF', function () {
     this.SPF.count=0;
     this.SPF.ip='212.70.129.94';
     this.SPF.mail_from='fraud@aexp.com';
+
     const rc = await this.SPF.mod_redirect('aexp.com')
-    // assert.equal(null, err);
     switch (rc) {
       case 7:
         // from time to time (this is the third time we've seen it,
