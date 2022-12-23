@@ -2,6 +2,11 @@
 ### Unreleased
 
 
+### [1.1.3] - 2022-12-23
+
+- fix print log (#6)
+
+
 ### [1.1.2] - 2022-12-21
 
 - dep: depend on net-utils 1.5.0
@@ -31,3 +36,4 @@
 
 [1.0.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.0.1
 [1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.2
+[1.1.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.3
