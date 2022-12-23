@@ -222,10 +222,10 @@ exports.hook_mail = async function (next, connection, params) {
     const result = await spf.check_host(connection.remote.ip, host, mfrom)
 
     // typical inbound (!relay)
-    if (!connection.relaying) return ch_cb(result)
+    if (!connection.relaying) return ch_cb(null, result)
 
     // outbound (relaying), context=sender
-    if (plugin.cfg.relay.context === 'sender') return ch_cb(result)
+    if (plugin.cfg.relay.context === 'sender') return ch_cb(null, result)
 
     // outbound (relaying), context=myself
     const my_public_ip = await net_utils.get_public_ip()
