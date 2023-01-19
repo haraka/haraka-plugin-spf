@@ -4,6 +4,8 @@ const SPF = require('./lib/spf').SPF;
 const net_utils = require('haraka-net-utils');
 const DSN = require('haraka-dsn');
 
+exports.SPF = SPF;
+
 exports.register = function () {
   const plugin = this;
 
