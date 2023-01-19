@@ -2,6 +2,11 @@
 ### Unreleased
 
 
+### [1.1.4] - 2023-01-19
+
+- Export SPF class (#8)
+
+
 ### [1.1.3] - 2022-12-23
 
 - fix print log (#6)
@@ -37,3 +42,4 @@
 [1.0.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.0.1
 [1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.2
 [1.1.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.3
+[1.1.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.4

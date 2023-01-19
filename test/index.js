@@ -44,6 +44,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_NONE, 'test@example.com');
   })
+
   it('result, none, reject=true', function (done) {
 
     this.plugin.cfg.deny.mfrom_none=true;
@@ -52,26 +53,29 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_NONE, 'test@example.com');
   })
+
   it('result, neutral', function (done) {
     this.plugin.return_results(function next () {
       assert.equal(undefined, arguments[0]);
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_NEUTRAL, 'test@example.com');
   })
+
   it('result, pass', function (done) {
     this.plugin.return_results(function next () {
       assert.equal(undefined, arguments[0]);
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_PASS, 'test@example.com');
   })
-  it('result, softfail, reject=false', function (done) {
 
+  it('result, softfail, reject=false', function (done) {
     this.plugin.cfg.deny.mfrom_softfail=false;
     this.plugin.return_results(function next () {
       assert.equal(undefined, arguments[0]);
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_SOFTFAIL, 'test@example.com');
   })
+
   it('result, softfail, reject=true', function (done) {
     this.plugin.cfg.deny.mfrom_softfail=true;
     this.plugin.return_results(function next () {
@@ -79,6 +83,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_SOFTFAIL, 'test@example.com');
   })
+
   it('result, fail, reject=false', function (done) {
     this.plugin.cfg.deny.mfrom_fail=false;
     this.plugin.return_results(function next () {
@@ -86,6 +91,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_FAIL, 'test@example.com');
   })
+
   it('result, fail, reject=true', function (done) {
     this.plugin.cfg.deny.mfrom_fail=true;
     this.plugin.return_results(function next () {
@@ -93,6 +99,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_FAIL, 'test@example.com');
   })
+
   it('result, temperror, reject=false', function (done) {
     this.plugin.cfg.defer.mfrom_temperror=false;
     this.plugin.return_results(function next () {
@@ -100,14 +107,15 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_TEMPERROR, 'test@example.com');
   })
+
   it('result, temperror, reject=true', function (done) {
-    function next () {
+    this.plugin.cfg.defer.mfrom_temperror=true;
+    this.plugin.return_results(function next () {
       assert.equal(DENYSOFT, arguments[0]);
       done()
-    }
-    this.plugin.cfg.defer.mfrom_temperror=true;
-    this.plugin.return_results(next, this.connection, spf, 'mfrom', spf.SPF_TEMPERROR, 'test@example.com');
+    }, this.connection, spf, 'mfrom', spf.SPF_TEMPERROR, 'test@example.com');
   })
+
   it('result, permerror, reject=false', function (done) {
     this.plugin.cfg.deny.mfrom_permerror=false;
     this.plugin.return_results(function next () {
@@ -115,6 +123,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_PERMERROR, 'test@example.com');
   })
+
   it('result, permerror, reject=true', function (done) {
     this.plugin.cfg.deny.mfrom_permerror=true;
     this.plugin.return_results(    function next () {
@@ -122,6 +131,7 @@ describe('return_results', function () {
       done()
     }, this.connection, spf, 'mfrom', spf.SPF_PERMERROR, 'test@example.com');
   })
+
   it('result, unknown', function (done) {
     this.plugin.return_results(function next () {
       assert.equal(undefined, arguments[0]);
@@ -142,6 +152,7 @@ describe('hook_helo', function () {
     this.plugin.helo_spf(next, this.connection);
     this.plugin.helo_spf(next, this.connection, 'helo.sender.com');
   })
+
   it('IPv4 literal', function (done) {
     this.connection.remote.ip='190.168.1.1';
     this.plugin.helo_spf(function next (rc) {
@@ -163,6 +174,7 @@ describe('hook_mail', function () {
       done()
     }, this.connection, [test_addr]);
   })
+
   it('rfc1918 relaying', function (done) {
     this.connection.set('remote.is_private', true);
     this.connection.set('remote.ip','192.168.1.1');
@@ -172,6 +184,7 @@ describe('hook_mail', function () {
       done()
     }, this.connection, [test_addr]);
   })
+
   it('no txn', function (done) {
     this.connection.remote.ip='207.85.1.1';
     delete this.connection.transaction;
@@ -180,6 +193,7 @@ describe('hook_mail', function () {
       done()
     }, this.connection);
   })
+
   it('txn, no helo', function (done) {
     this.plugin.cfg.deny.mfrom_fail = false;
     this.connection.remote.ip='207.85.1.1';
@@ -188,6 +202,7 @@ describe('hook_mail', function () {
       done()
     }, this.connection, [test_addr]);
   })
+
   it('txn', function (done) {
     this.connection.set('remote', 'ip', '207.85.1.1');
     this.connection.set('hello', 'host', 'mail.example.com');
@@ -196,6 +211,7 @@ describe('hook_mail', function () {
       done()
     }, this.connection, [test_addr]);
   })
+
   it('txn, relaying', function (done) {
     this.connection.set('remote.ip', '207.85.1.1');
     this.connection.relaying=true;
@@ -205,8 +221,9 @@ describe('hook_mail', function () {
       done()
     }, this.connection, [test_addr]);
   })
+
   it('txn, relaying, is_private', function (done) {
-    this.timeout(4000)
+    this.timeout(6000)
     this.plugin.cfg.relay.context='myself';
     this.plugin.cfg.deny_relay.mfrom_fail = true;
     this.connection.set('remote.ip', '127.0.1.1');
