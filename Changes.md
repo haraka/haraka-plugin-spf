@@ -1,7 +1,14 @@
 
 ### Unreleased
 
-- Fix bug where skip configuration was ignored
+
+### [1.2.1] - 2023-06-19
+
+- fix: call skip_hosts via 'this' instead of exports (#11)
+- skip configuration was being ignored
+- es6: replace `plugin` with `this`
+- deps: bump versions to latest
+
 
 ### [1.2.0] - 2023-01-19
 
@@ -44,3 +51,4 @@
 [1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.2
 [1.1.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.3
 [1.2.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.0
+[1.2.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.1
