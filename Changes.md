@@ -1,6 +1,7 @@
 
 ### Unreleased
 
+- Fix bug where skip configuration was ignored
 
 ### [1.2.0] - 2023-01-19
 
