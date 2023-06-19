@@ -87,7 +87,7 @@ exports.helo_spf = async function (next, connection, helo) {
   const plugin = this;
 
   // bypass auth'ed or relay'ing hosts if told to
-  const skip_reason = exports.skip_hosts(connection);
+  const skip_reason = this.skip_hosts(connection);
   if (skip_reason) {
     connection.results.add(plugin, {skip: `helo(${skip_reason})`});
     return next();
@@ -147,7 +147,7 @@ exports.hook_mail = async function (next, connection, params) {
   if (!txn) return next();
 
   // bypass auth'ed or relay'ing hosts if told to
-  const skip_reason = exports.skip_hosts(connection);
+  const skip_reason = this.skip_hosts(connection);
   if (skip_reason) {
     txn.results.add(plugin, {skip: `host(${skip_reason})`});
     return next(CONT, `skipped because host(${skip_reason})`);
