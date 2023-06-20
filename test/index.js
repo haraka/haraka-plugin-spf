@@ -16,7 +16,7 @@ beforeEach(function () {
   this.plugin.timeout = 8000;
   this.plugin.load_spf_ini();
 
-  // uncomment this line to see detailed SPF evaluation
+  // comment this line to see detailed SPF evaluation
   this.plugin.SPF.prototype.log_debug = () => {};
 
   this.connection = fixtures.connection.createConnection();
@@ -165,10 +165,10 @@ describe('hook_helo', function () {
 const test_addr = new Address('<test@example.com>');
 
 describe('hook_mail', function () {
-  it('rfc1918', function (done) {
 
-    this.connection.remote.is_private=true;
-    this.connection.remote.ip='192.168.1.1';
+  it('rfc1918', function (done) {
+    this.connection.set('remote.is_private', true);
+    this.connection.set('remote.ip', '192.168.1.1');
     this.plugin.hook_mail(function next () {
       assert.equal(undefined, arguments[0]);
       done()
@@ -190,22 +190,26 @@ describe('hook_mail', function () {
     delete this.connection.transaction;
     this.plugin.hook_mail(function next () {
       assert.equal(undefined, arguments[0]);
+      assert.equal(undefined, arguments[1]);
       done()
     }, this.connection);
   })
 
   it('txn, no helo', function (done) {
+    this.timeout(3000)
     this.plugin.cfg.deny.mfrom_fail = false;
-    this.connection.remote.ip='207.85.1.1';
+    this.connection.set('remote.ip', '207.85.1.1');
     this.plugin.hook_mail(function next () {
       assert.equal(undefined, arguments[0]);
+      assert.equal(undefined, arguments[1]);
       done()
     }, this.connection, [test_addr]);
   })
 
   it('txn', function (done) {
-    this.connection.set('remote', 'ip', '207.85.1.1');
-    this.connection.set('hello', 'host', 'mail.example.com');
+    this.timeout(3000)
+    this.connection.set('remote.ip', '207.85.1.1');
+    this.connection.set('hello.host', 'mail.example.com');
     this.plugin.hook_mail(function next (rc) {
       assert.equal(undefined, rc);
       done()
@@ -213,8 +217,9 @@ describe('hook_mail', function () {
   })
 
   it('txn, relaying', function (done) {
+    this.timeout(3000)
     this.connection.set('remote.ip', '207.85.1.1');
-    this.connection.relaying=true;
+    this.connection.set('relaying', true);
     this.connection.set('hello.host', 'mail.example.com');
     this.plugin.hook_mail(function next (rc) {
       assert.equal(undefined, rc);
