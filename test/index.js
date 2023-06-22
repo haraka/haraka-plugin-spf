@@ -160,6 +160,14 @@ describe('hook_helo', function () {
       done()
     }, this.connection, '[190.168.1.1]' );
   })
+
+  it('MX with no A record', function (done) {
+    this.connection.set('remote.ip', '192.0.2.0');
+    this.plugin.helo_spf(function next (rc) {
+      assert.equal(undefined, rc);
+      done()
+    }, this.connection, 'haraka-test.tnpi.net' );
+  })
 })
 
 const test_addr = new Address('<test@example.com>');
