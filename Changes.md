@@ -2,11 +2,17 @@
 ### Unreleased
 
 
+### [1.2.2] - 2023-06-22
+
+- fix: check for DNS results befor iterating, fixes #13
+- es6(lib/spf): replace `self` with `this`
+
+
 ### [1.2.1] - 2023-06-19
 
 - fix: call skip_hosts via 'this' instead of exports (#11)
 - skip configuration was being ignored
-- es6: replace `plugin` with `this`
+- es6(index): replace `plugin` with `this`
 - deps: bump versions to latest
 
 
@@ -52,3 +58,4 @@
 [1.1.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.3
 [1.2.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.0
 [1.2.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.1
+[1.3.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.3.0
