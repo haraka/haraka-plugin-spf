@@ -34,8 +34,12 @@ if (parsed.domain) {
   }
 }
 
-spf.check_host(parsed.ip, (domain ? domain : parsed.helo), null, function (err, result) {
-  if (err) {
+(async () => {
+  let result;
+  try {
+    result = await spf.check_host(parsed.ip, (domain ? domain : parsed.helo));
+  }
+  catch (err) {
     console.log(`Error: ${err.message}`);
     process.exit(1);
   }
@@ -45,4 +49,4 @@ spf.check_host(parsed.ip, (domain ? domain : parsed.helo), null, function (err, 
     `domain="${(domain ? domain : '')}"`,
     `result=${spf.result(result)}`
   ].join(' '));
-})
+})();
