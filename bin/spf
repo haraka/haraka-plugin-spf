@@ -34,15 +34,14 @@ if (parsed.domain) {
   }
 }
 
-spf.check_host(parsed.ip, (domain ? domain : parsed.helo), null, function (err, result) {
-  if (err) {
-    console.log(`Error: ${err.message}`);
-    process.exit(1);
-  }
+spf.check_host(parsed.ip, (domain ? domain : parsed.helo)).then((result) => {
   console.log([
     `ip=${parsed.ip}`,
     `helo="${(parsed.helo ? parsed.helo : '')}"`,
     `domain="${(domain ? domain : '')}"`,
     `result=${spf.result(result)}`
   ].join(' '));
-})
+}).catch((err) => {
+  console.error(`Error: ${err.message}`);
+  process.exit(1);
+});

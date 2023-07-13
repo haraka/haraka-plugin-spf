@@ -78,6 +78,13 @@ describe('SPF', function () {
     }
   })
 
+  it('check_host, facebook.com, pass', async function () {
+    this.timeout = 3000;
+    this.SPF.count = 0;
+    const rc = await this.SPF.check_host('69.171.232.145', 'facebookmail.com');
+    assert.equal(rc, this.SPF.SPF_PASS, "pass");
+  })
+
   it('valid_ip, true', function (done) {
     assert.equal(this.SPF.valid_ip(':212.70.129.94'), true);
     done()
