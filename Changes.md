@@ -2,6 +2,11 @@
 ### Unreleased
 
 
+### [1.2.3] - 2023-07-14
+
+- fix: Handle DNS TXT array result (#15)
+
+
 ### [1.2.2] - 2023-06-22
 
 - fix: check for DNS results befor iterating, fixes #13
@@ -59,3 +64,4 @@
 [1.2.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.0
 [1.2.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.1
 [1.3.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.3.0
+[1.2.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.3
