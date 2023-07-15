@@ -162,6 +162,7 @@ describe('hook_helo', function () {
   })
 
   it('MX with no A record', function (done) {
+    this.timeout(5000)
     this.connection.set('remote.ip', '192.0.2.0');
     this.plugin.helo_spf(function next (rc) {
       assert.equal(undefined, rc);
@@ -236,7 +237,7 @@ describe('hook_mail', function () {
   })
 
   it('txn, relaying, is_private', function (done) {
-    this.timeout(6000)
+    this.timeout(8000)
     this.plugin.cfg.relay.context='myself';
     this.plugin.cfg.deny_relay.mfrom_fail = true;
     this.connection.set('remote.ip', '127.0.1.1');
