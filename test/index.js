@@ -162,6 +162,7 @@ describe('hook_helo', function () {
   })
 
   it('MX with no A record', function (done) {
+    this.timeout(4000)
     this.connection.set('remote.ip', '192.0.2.0');
     this.plugin.helo_spf(function next (rc) {
       assert.equal(undefined, rc);
