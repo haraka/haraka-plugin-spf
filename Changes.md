@@ -1,6 +1,9 @@
 
 ### Unreleased
 
+### [1.2.4] - 2023-09-07
+
+- fix: avoid exception on undefined mx
 
 ### [1.2.3] - 2023-07-14
 
