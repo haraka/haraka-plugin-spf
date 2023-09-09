@@ -74,7 +74,7 @@ There's a special setting that would allow the plugin to emit a funny explanatio
   reject messages that explicitely fail SPF tests. SPF failures have a high
   correlation with spam. However, up to 10% of ham transits forwarders and/or
   email lists which frequently break SPF. SPF results are best used as inputs
-  to other plugins such as DMARC, [spamassassin](http://haraka.github.io/manual/plugins/spamassassin.html), and [karma](http://haraka.github.io/manual/plugins/karma.html).
+  to other plugins such as DMARC, [spamassassin](http://haraka.github.io/plugins/spamassassin), and [haraka-plugin-karma](https://github.com/haraka/haraka-plugin-karma).
 
 * Heed well the implications of SPF, as described in [RFC 4408](http://tools.ietf.org/html/rfc4408#section-9.3)
 
