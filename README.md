@@ -13,14 +13,18 @@ To make it reject mail then you will need to enable the relevant options below.
 of SPF but you will need to whitelist any hosts forwarding mail from another
 domain whilst preserving the original return-path.
 
-Configuration
+## Configuration
+
 -------------
 
 This plugin uses spf.ini for configuration and the following options are
 available:
 
-    [relay]
-    context=sender   (default: sender)
+
+```ini
+[relay]
+context=sender   (default: sender)
+```
 
 On connections with relaying privileges (MSA or mail relay), it is often
 desirable to evaluate SPF from the context of Haraka's public IP(s), in the
@@ -35,24 +39,28 @@ denying mail from senders whose SPF fails the checks.
 
 Additional settings allow you to control the small things (defaults are shown):
 
-    ; The lookup timeout, in seconds. Better set it to something much lower than this.
-    lookup_timeout = 29
+```ini
+; The lookup timeout, in seconds. Better set it to something much lower than this.
+lookup_timeout = 29
 
-    ; bypass hosts that match these conditions
-    [skip]
-    ; hosts that relay through us
-    relaying = false
-    ; hosts that are SMTP AUTH'ed
-    auth = false
+; bypass hosts that match these conditions
+[skip]
+; hosts that relay through us
+relaying = false
+; hosts that are SMTP AUTH'ed
+auth = false
+```
 
 There's a special setting that would allow the plugin to emit a funny explanation text on SPF DENY, essentially meant to be visible to end-users that will receive the bounce. The text is `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}` and is enabled by:
 
-    [deny]
-    openspf_text = true
-    
-    ; in case you DENY on failing SPF on hosts that are relaying (but why?)
-    [deny_relay]
-    openspf_text = true
+```ini
+[deny]
+openspf_text = true
+
+; in case you DENY on failing SPF on hosts that are relaying (but why?)
+[deny_relay]
+openspf_text = true
+```
 
 ### Things to Know
 
@@ -78,40 +86,59 @@ There's a special setting that would allow the plugin to emit a funny explanatio
 
 * Heed well the implications of SPF, as described in [RFC 4408](http://tools.ietf.org/html/rfc4408#section-9.3)
 
-    [defer]
-    helo_temperror
-    mfrom_temperror
+### spf.ini default settings
 
-    [deny]
-    helo_none
-    helo_softfail
-    helo_fail
-    helo_permerror
+```ini
+lookup_timeout = 29
 
-    mfrom_none
-    mfrom_softfail
-    mfrom_fail
-    mfrom_permerror
-    
-    openspf_text
 
-    ; SPF settings used when connection.relaying=true
-    [defer_relay]
-    helo_temperror
-    mfrom_temperror
+[relay]
+context=sender
 
-    [deny_relay]
-    helo_none
-    helo_softfail
-    helo_fail
-    helo_permerror
 
-    mfrom_none
-    mfrom_softfail
-    mfrom_fail
-    mfrom_permerror
-    
-    openspf_text
+[skip]
+relaying=false
+auth=false
+
+
+[defer]
+helo_temperror=false
+mfrom_temperror=false
+
+
+[deny]
+helo_none=false
+helo_softfail=false
+helo_fail=false
+helo_permerror=false
+
+mfrom_none=false
+mfrom_softfail=false
+mfrom_fail=false
+mfrom_permerror=false
+
+openspf_text=false
+
+
+; SPF settings used when connection.relaying=true
+[defer_relay]
+helo_temperror=false
+mfrom_temperror=false
+
+
+[deny_relay]
+helo_none=false
+helo_softfail=false
+helo_fail=false
+helo_permerror=false
+
+mfrom_none=false
+mfrom_softfail=false
+mfrom_fail=false
+mfrom_permerror=false
+
+openspf_text=false
+```
 
 
 Testing
@@ -121,17 +148,17 @@ This plugin also provides a command-line test tool that can be used to debug SPF
 
 To check the SPF record for a domain:
 
-````
+```sh
 # spf --ip 1.2.3.4 --domain fsl.com
 ip=1.2.3.4 helo="" domain="fsl.com" result=Fail
-````
+```
 
 To check the SPF record for a HELO/EHLO name:
 
-````
+```sh
 # spf --ip 1.2.3.4 --helo foo.bar.com
 ip=1.2.3.4 helo="foo.bar.com" domain="" result=None
-````
+```
 
 You can add `--debug` to the option arguments to see a full trace of the SPF processing.
 
