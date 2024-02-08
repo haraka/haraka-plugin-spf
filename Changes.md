@@ -2,6 +2,12 @@
 ### Unreleased
 
 
+### [1.2.4] - 2024-02-07
+
+- doc(README): add ini code fences, improve docs
+- dep(net-utils): bumped 1.5.0 -> 1.5.3
+
+
 ### [1.2.3] - 2023-07-14
 
 - fix: Handle DNS TXT array result (#15)
@@ -65,3 +71,4 @@
 [1.2.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.1
 [1.3.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.3.0
 [1.2.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.3
+[1.2.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.4
