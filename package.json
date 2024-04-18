@@ -3,7 +3,12 @@
   "version": "1.2.5",
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
-  "files": ["CHANGELOG.md","bin","config","lib"],
+  "files": [
+    "CHANGELOG.md",
+    "bin",
+    "config",
+    "lib"
+  ],
   "scripts": {
     "format": "npm run prettier:fix && npm run lint:fix",
     "lint": "npx eslint@^8 *.js bin/spf lib test",
@@ -19,7 +24,8 @@
     "url": "git+https://github.com/haraka/haraka-plugin-spf.git"
   },
   "keywords": [
-    "haraka", "haraka-plugin",
+    "haraka",
+    "haraka-plugin",
     "plugin",
     "spf"
   ],
