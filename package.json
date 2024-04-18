@@ -1,8 +1,9 @@
 {
   "name": "haraka-plugin-spf",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
+  "files": ["CHANGELOG.md","bin","config","lib"],
   "scripts": {
     "lint": "npx eslint *.js bin/spf lib test",
     "lintfix": "npx eslint --fix *.js bin/spf lib test",

@@ -20,7 +20,7 @@ beforeEach(function () {
   this.plugin.SPF.prototype.log_debug = () => {};
 
   this.connection = fixtures.connection.createConnection();
-  this.connection.transaction = fixtures.transaction.createTransaction();
+  this.connection.init_transaction()
 })
 
 describe('spf', function () {
@@ -167,7 +167,7 @@ describe('hook_helo', function () {
     this.plugin.helo_spf(function next (rc) {
       assert.equal(undefined, rc);
       done()
-    }, this.connection, 'haraka-test.tnpi.net' );
+    }, this.connection, 'test.haraka.tnpi.net' );
   })
 })
 
