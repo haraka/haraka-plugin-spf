@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.5] - 2024-04-17
 
-- 
+- get_mx: filter out implicit MX records
 - dep: eslint-plugin-haraka -> @haraka/eslint-config
 - chore: lint: remove duplicate / stale rules from .eslintrc
 - chore: populate [files] in package.json. Delete .npmignore.
