@@ -2,46 +2,55 @@
 
 // SPF test tool
 
-const nopt = require('nopt');
-const path = require('path');
-const base_path = path.join(__dirname, '..');
-const SPF = require(`${base_path}/lib/spf`).SPF;
-const spf = new SPF();
+const nopt = require('nopt')
+const path = require('path')
+const base_path = path.join(__dirname, '..')
+const SPF = require(`${base_path}/lib/spf`).SPF
+const spf = new SPF()
 
-const parsed = nopt({ 'debug': Boolean, 'ip': String, 'helo': String, 'domain': String  });
+const parsed = nopt({
+  debug: Boolean,
+  ip: String,
+  helo: String,
+  domain: String,
+})
 
-function print_usage () {
-  console.log('Usage: spf [--debug] --ip <ip> --helo <helo> --domain <domain>');
-  process.exit(1);
+function print_usage() {
+  console.log('Usage: spf [--debug] --ip <ip> --helo <helo> --domain <domain>')
+  process.exit(1)
 }
 
-if (!parsed.ip || (parsed.ip && (!parsed.domain && !parsed.helo))) {
-  print_usage();
+if (!parsed.ip || (parsed.ip && !parsed.domain && !parsed.helo)) {
+  print_usage()
 }
 
 if (!parsed.debug) {
-  SPF.prototype.log_debug = function (str) {}
+  SPF.prototype.log_debug = function () {}
 }
 
-let domain;
+let domain
 if (parsed.domain) {
-  domain = /@(.+)$/.exec(parsed.domain);
+  domain = /@(.+)$/.exec(parsed.domain)
   if (domain) {
-    domain = domain[1];
-  }
-  else {
-    domain = parsed.domain;
+    domain = domain[1]
+  } else {
+    domain = parsed.domain
   }
 }
 
-spf.check_host(parsed.ip, (domain ? domain : parsed.helo)).then((result) => {
-  console.log([
-    `ip=${parsed.ip}`,
-    `helo="${(parsed.helo ? parsed.helo : '')}"`,
-    `domain="${(domain ? domain : '')}"`,
-    `result=${spf.result(result)}`
-  ].join(' '));
-}).catch((err) => {
-  console.error(`Error: ${err.message}`);
-  process.exit(1);
-});
+spf
+  .check_host(parsed.ip, domain ? domain : parsed.helo)
+  .then((result) => {
+    console.log(
+      [
+        `ip=${parsed.ip}`,
+        `helo="${parsed.helo ? parsed.helo : ''}"`,
+        `domain="${domain ? domain : ''}"`,
+        `result=${spf.result(result)}`,
+      ].join(' '),
+    )
+  })
+  .catch((err) => {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  })
