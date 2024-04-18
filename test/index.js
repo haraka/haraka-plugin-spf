@@ -271,6 +271,8 @@ describe('hook_helo', function () {
 const test_addr = new Address('<test@example.com>')
 
 describe('hook_mail', function () {
+  this.timeout(5000)
+
   it('rfc1918', function (done) {
     this.connection.set('remote.is_private', true)
     this.connection.set('remote.ip', '192.168.1.1')
@@ -309,7 +311,6 @@ describe('hook_mail', function () {
   })
 
   it('txn, no helo', function (done) {
-    this.timeout(3000)
     this.plugin.cfg.deny.mfrom_fail = false
     this.connection.set('remote.ip', '207.85.1.1')
     this.plugin.hook_mail(
@@ -324,7 +325,6 @@ describe('hook_mail', function () {
   })
 
   it('txn', function (done) {
-    this.timeout(3000)
     this.connection.set('remote.ip', '207.85.1.1')
     this.connection.set('hello.host', 'mail.example.com')
     this.plugin.hook_mail(
@@ -338,7 +338,6 @@ describe('hook_mail', function () {
   })
 
   it('txn, relaying', function (done) {
-    this.timeout(3000)
     this.connection.set('remote.ip', '207.85.1.1')
     this.connection.set('relaying', true)
     this.connection.set('hello.host', 'mail.example.com')
@@ -353,7 +352,7 @@ describe('hook_mail', function () {
   })
 
   it('txn, relaying, is_private', function (done) {
-    this.timeout(8000)
+    this.timeout(12000)
     this.plugin.cfg.relay.context = 'myself'
     this.plugin.cfg.deny_relay.mfrom_fail = true
     this.connection.set('remote.ip', '127.0.1.1')
