@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.5] - 2024-04-17
 
-- populate [files] in package.json. Delete .npmignore.
+- 
+- dep: eslint-plugin-haraka -> @haraka/eslint-config
+- chore: lint: remove duplicate / stale rules from .eslintrc
+- chore: populate [files] in package.json. Delete .npmignore.
+- doc(CONTRIBUTORS): added
+- doc(CHANGES): renamed CHANGELOG
+- chore: prettier
 
 ### [1.2.4] - 2024-02-07
 

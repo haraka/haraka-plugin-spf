@@ -15,7 +15,7 @@
     "url": "git+https://github.com/haraka/haraka-plugin-spf.git"
   },
   "keywords": [
-    "haraka",
+    "haraka", "haraka-plugin",
     "plugin",
     "spf"
   ],
@@ -35,9 +35,7 @@
     "nopt": "^7.2.0"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-plugin-haraka": "*",
-    "haraka-test-fixtures": "^1.3.3",
-    "mocha": "^10.2.0"
+    "@haraka/eslint-config": "^1.1.3",
+    "haraka-test-fixtures": "^1.3.3"
   }
 }
