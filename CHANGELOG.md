@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.2.7] - 2024-08-14
+
+
+
 ### [1.2.6] - 2024-08-14
 
 - mech_mx: fix incorrect evaluation of MX addresses
@@ -82,3 +86,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.3
 [1.2.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.4
 [1.2.5]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.5
+[1.2.7]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.7
