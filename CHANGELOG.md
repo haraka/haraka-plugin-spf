@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### [1.2.7] - 2024-08-14
 
 - test: in index.js, unref timers, so test suite exits
+- chore: bump dep versions
 
 ### [1.2.6] - 2024-08-14
 
