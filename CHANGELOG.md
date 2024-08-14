@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.2.6] - 2024-08-14
+
+- Fix mx_mech handling (#26)
+
 ### [1.2.5] - 2024-04-17
 
 - get_mx: filter out implicit MX records
@@ -78,3 +82,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.3
 [1.2.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.4
 [1.2.5]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.5
+[1.2.6]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.6
