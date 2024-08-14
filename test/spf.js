@@ -53,6 +53,15 @@ describe('SPF', function () {
     }
   })
 
+  it('resolves more than one IP in mech_mx', async function () {
+    this.timeout = 4000
+    this.SPF.domain = 'gmail.com'
+    this.SPF.ip_ver = 'ipv4'
+
+    const rc = await this.SPF.mech_mx()
+    assert.equal((this.SPF._found_mx_addrs.length > 1), true)
+  })
+
   it('check_host, gmail.com, fail', async function () {
     this.timeout = 3000
     this.SPF.count = 0
