@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.2.6] - 2024-08-14
+
+- mech_mx: fix incorrect evaluation of MX addresses
+
 ### [1.2.5] - 2024-04-17
 
 - get_mx: filter out implicit MX records
