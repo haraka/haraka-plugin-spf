@@ -118,6 +118,7 @@ exports.helo_spf = async function (next, connection, helo) {
     connection.loginfo(plugin, 'timeout')
     next()
   }, plugin.cfg.lookup_timeout * 1000)
+  timer.unref()
 
   try {
     const result = await spf.check_host(connection.remote.ip, helo, null)
@@ -203,6 +204,7 @@ exports.hook_mail = async function (next, connection, params) {
     connection.loginfo(plugin, 'timeout')
     next()
   }, plugin.cfg.lookup_timeout * 1000)
+  timer.unref()
 
   spf.helo = connection.hello?.host
 
