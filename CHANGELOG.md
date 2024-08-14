@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.7] - 2024-08-14
 
-
-
 ### [1.2.6] - 2024-08-14
 
 - mech_mx: fix incorrect evaluation of MX addresses
