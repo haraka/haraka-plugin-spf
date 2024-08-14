@@ -58,7 +58,7 @@ describe('SPF', function () {
     this.SPF.domain = 'gmail.com'
     this.SPF.ip_ver = 'ipv4'
 
-    const rc = await this.SPF.mech_mx()
+    await this.SPF.mech_mx()
     assert.equal((this.SPF._found_mx_addrs.length > 1), true)
   })
 
