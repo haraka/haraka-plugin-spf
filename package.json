@@ -42,7 +42,7 @@
     "haraka-dsn": "^1.1.0",
     "haraka-net-utils": "^1.7.0",
     "ipaddr.js": "^2.2.0",
-    "nopt": "^7.2.1"
+    "nopt": "^8.0.0"
   },
   "devDependencies": {
     "@haraka/eslint-config": "^1.1.5",
