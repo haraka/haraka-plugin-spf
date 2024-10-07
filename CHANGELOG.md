@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.8] - 2024-10-07
 
-- fix: mech_MX fix crit error on logging undef addrs
+- fix: mech_MX crit error on logging undef addrs
 
 ### [1.2.7] - 2024-08-14
 
