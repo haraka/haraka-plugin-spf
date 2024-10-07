@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-spf",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
   "files": [
