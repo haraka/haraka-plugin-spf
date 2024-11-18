@@ -7,6 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - fix: undefined variable in mech_mx if no valid MX found
 - add: new spf_record_include_match property to allow for additional filtering
 
+### [1.2.8] - 2024-10-07
+
+- fix: mech_MX crit error on logging undef addrs
+
+### [1.2.7] - 2024-08-14
+
+- test: in index.js, unref timers, so test suite exits
+- chore: bump dep versions
+
+### [1.2.6] - 2024-08-14
+
+- mech_mx: fix incorrect evaluation of MX addresses
+
 ### [1.2.5] - 2024-04-17
 
 - get_mx: filter out implicit MX records
@@ -81,3 +94,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.3
 [1.2.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.4
 [1.2.5]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.5
+[1.2.7]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.7
