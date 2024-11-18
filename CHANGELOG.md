@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- fix: undefined variable in mech_mx if no valid MX found
+- add: new spf_record_include_match property to allow for additional filtering
+
 ### [1.2.5] - 2024-04-17
 
 - get_mx: filter out implicit MX records
