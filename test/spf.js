@@ -107,4 +107,11 @@ describe('SPF', function () {
     assert.equal(this.SPF.valid_ip(':212.70.d.94'), false)
     done()
   })
+
+  it('sets spf_record_include_match correctly', async function () {
+    this.timeout = 3000
+    this.SPF.count = 0
+    await this.SPF.check_host('130.211.0.1', 'google.com')
+    assert.ok(this.SPF.spf_record_include_match?.['_netblocks3.google.com'], 'expected include not found') 
+  })
 })
