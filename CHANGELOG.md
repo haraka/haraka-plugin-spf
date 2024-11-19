@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - fix: undefined variable exception when no MX is found, #32
 - add: new spf_record_include_match property to allow for additional filtering
+- deps: bump versions to latest
 
 ### [1.2.8] - 2024-10-07
 
