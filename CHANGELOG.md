@@ -4,7 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
-- fix: undefined variable in mech_mx if no valid MX found
+### [1.2.9] - 2024-11-19
+
+- fix: undefined variable exception when no MX is found, #32
 - add: new spf_record_include_match property to allow for additional filtering
 
 ### [1.2.8] - 2024-10-07
@@ -95,3 +97,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.4
 [1.2.5]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.5
 [1.2.7]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.7
+[1.2.9]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.9
