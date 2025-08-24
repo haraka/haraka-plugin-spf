@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - config/spf.ini: add commented out default setings
 - test(spf): update IP for google.com SPF test
 - lint: update to eslint 9
+- deps: bump versions to latest
+- index.js: light refactor
+- dev(cc): relax some tests
+- prettier: moved config into package.json
 
 ### [1.2.9] - 2024-11-19
 
