@@ -7,15 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### [1.2.10] - 2025-08-24
 
 - index.js: light es6 refactor
+  - fix: avoid inadvertant double unescape
   - delete legacy config support
-  - avoid inadvertant double unescape
 - doc(README): tighten up grammar, improve flow
-- config/spf.ini: add commented out default setings
+- config(spf.ini): add commented out default setings
 - test(spf): update IP for google.com SPF test
-- lint: update to eslint 9
-- deps: bump versions to latest
+- chore(lint): update to eslint 9
+- chore(deps): bump versions to latest
 - dev(codeclimate): relax some tests
-- prettier: moved config into package.json
+- style(prettier): moved config into package.json
 
 ### [1.2.9] - 2024-11-19
 
