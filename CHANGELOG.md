@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - deps: bump versions to latest
 - index.js: light es6 refactor
   - delete legacy config support
-- dev(cc): relax some tests
+- dev(codeclimate): relax some tests
 - prettier: moved config into package.json
 
 ### [1.2.9] - 2024-11-19
