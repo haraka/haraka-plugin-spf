@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-spf",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
   "files": [
@@ -11,11 +11,11 @@
   ],
   "scripts": {
     "format": "npm run prettier:fix && npm run lint:fix",
-    "lint": "npx eslint@^8 *.js bin/spf lib test",
-    "lint:fix": "npx eslint@^8 --fix *.js bin/spf lib test",
+    "lint": "npx eslint *.js bin/spf lib test",
+    "lint:fix": "npx eslint --fix *.js bin/spf lib test",
     "prettier": "npx prettier . --check",
     "prettier:fix": "npx prettier . --write --log-level=warn",
-    "test": "npx mocha@10",
+    "test": "npx mocha@11",
     "versions": "npx dependency-version-checker check",
     "versions:fix": "npx dependency-version-checker update && npm run prettier:fix"
   },
@@ -40,12 +40,16 @@
   },
   "dependencies": {
     "haraka-dsn": "^1.1.0",
-    "haraka-net-utils": "^1.7.1",
+    "haraka-net-utils": "^1.7.2",
     "ipaddr.js": "^2.2.0",
-    "nopt": "^8.0.0"
+    "nopt": "^8.1.0"
   },
   "devDependencies": {
-    "@haraka/eslint-config": "^1.1.5",
-    "haraka-test-fixtures": "^1.3.8"
+    "@haraka/eslint-config": "^2.0.3",
+    "haraka-test-fixtures": "^1.3.10"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   }
 }
