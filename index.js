@@ -34,12 +34,12 @@ exports.load_spf_ini = function () {
         '-deny.helo_softfail',
         '-deny.helo_fail',
         '-deny.helo_permerror',
-        '-deny.openspf_text',
 
         '-deny.mfrom_none',
         '-deny.mfrom_softfail',
         '-deny.mfrom_fail',
         '-deny.mfrom_permerror',
+        '-deny.openspf_text',
 
         '-deny_relay.helo_none',
         '-deny_relay.helo_softfail',

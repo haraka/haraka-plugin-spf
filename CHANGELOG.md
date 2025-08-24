@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.2.10] - 2025-08-24
+
+- doc(README): tighten up grammar, improve flow
+- config/spf.ini: add commented out default setings
+- test(spf): update IP for google.com SPF test
+- lint: update to eslint 9
+
 ### [1.2.9] - 2024-11-19
 
 - fix: undefined variable exception when no MX is found, #32
@@ -99,3 +106,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.5]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.5
 [1.2.7]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.7
 [1.2.9]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.9
+[1.2.10]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.10
