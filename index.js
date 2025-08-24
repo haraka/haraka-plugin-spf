@@ -244,7 +244,7 @@ exports.hook_mail = async function (next, connection, params) {
 
     // outbound (relaying), context=myself
     const my_public_ip = await net_utils.get_public_ip()
-    let spf_result = result ? spf.result(result).toLowerCase() : undefined
+    const spf_result = result ? spf.result(result).toLowerCase() : undefined
     if (spf_result && spf_result !== 'pass') {
       if (!my_public_ip) return ch_cb(new Error('failed to discover public IP'))
       spf = new SPF()
