@@ -11,7 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - test(spf): update IP for google.com SPF test
 - lint: update to eslint 9
 - deps: bump versions to latest
-- index.js: light refactor
+- index.js: light es6 refactor
+  - delete legacy config support
 - dev(cc): relax some tests
 - prettier: moved config into package.json
 

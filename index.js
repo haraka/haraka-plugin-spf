@@ -57,15 +57,6 @@ exports.load_spf_ini = function () {
     () => this.load_spf_ini(),
   )
 
-  // when set, preserve legacy config settings
-  for (const phase of ['helo', 'mail']) {
-    const { main, deny, defer } = this.cfg
-    if (main[`${phase}_softfail_reject`]) deny[`${phase}_softfail`] = true
-    if (main[`${phase}_fail_reject`]) deny[`${phase}_fail`] = true
-    if (main[`${phase}_temperror_defer`]) defer[`${phase}_temperror`] = true
-    if (main[`${phase}_permerror_reject`]) deny[`${phase}_permerror`] = true
-  }
-
   if (!this.cfg.relay) this.cfg.relay = { context: 'sender' }
   this.cfg.lookup_timeout = this.cfg.main.lookup_timeout || this.timeout - 1
 }
