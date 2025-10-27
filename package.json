@@ -15,7 +15,7 @@
     "lint:fix": "npx eslint --fix *.js bin/spf lib test",
     "prettier": "npx prettier . --check",
     "prettier:fix": "npx prettier . --write --log-level=warn",
-    "test": "npx mocha@11",
+    "test": "npx mocha",
     "versions": "npx dependency-version-checker check",
     "versions:fix": "npx dependency-version-checker update && npm run prettier:fix"
   },
@@ -42,7 +42,7 @@
     "haraka-dsn": "^1.1.0",
     "haraka-net-utils": "^1.7.2",
     "ipaddr.js": "^2.2.0",
-    "nopt": "^8.1.0"
+    "nopt": "^9.0.0"
   },
   "devDependencies": {
     "@haraka/eslint-config": "^2.0.3",

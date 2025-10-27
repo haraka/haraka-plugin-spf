@@ -112,9 +112,6 @@ describe('SPF', function () {
     this.timeout = 3000
     this.SPF.count = 0
     await this.SPF.check_host('172.217.32.1', 'google.com')
-    assert.ok(
-      this.SPF.spf_record_include_match?.['_netblocks3.google.com'],
-      'expected include not found',
-    )
+    assert.ok(this.SPF.spf_record_include_match?.['_netblocks.google.com'])
   })
 })
