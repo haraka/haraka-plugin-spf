@@ -1,6 +1,6 @@
 {
   "name": "haraka-plugin-spf",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "description": "Sender Policy Framework (SPF) plugin for Haraka",
   "main": "index.js",
   "files": [
@@ -41,7 +41,7 @@
   "dependencies": {
     "haraka-dsn": "^1.1.0",
     "haraka-net-utils": "^1.7.2",
-    "ipaddr.js": "^2.2.0",
+    "ipaddr.js": "^2.3.0",
     "nopt": "^9.0.0"
   },
   "devDependencies": {
