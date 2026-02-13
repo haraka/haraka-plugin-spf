@@ -4,8 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.2.11] - 2026-02-13
+
 - style(header): fold the SPF header, remove redundant server name
-- test: update SPF test to no longer fail
+- test: update SPF test to no longer fail, #36
 - dep(nopt): bump to v9
 
 ### [1.2.10] - 2025-08-24
@@ -105,7 +107,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.0.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.0.0
 [1.0.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.0.1
 [1.1.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.1.0
-[1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.1.2
+[1.1.2]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.2
 [1.1.3]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.3
 [1.1.4]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.1.4
 [1.2.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/1.2.0
@@ -117,3 +119,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.7]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.7
 [1.2.9]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.9
 [1.2.10]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.10
+[1.2.11]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.11
+[1.2.6]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.6
