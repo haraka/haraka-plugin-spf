@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - style(header): fold the SPF header, remove redundant server name
 - test: update SPF test to no longer fail, #36
 - dep(nopt): bump to v9
+- deps(*): bump to latest
 
 ### [1.2.10] - 2025-08-24
 
