@@ -318,7 +318,11 @@ exports.save_to_header = (connection, spf, result, mfrom, host, id, ip) => {
   const identity = `identity=${id}; client-ip=${ip || connection.remote.ip}`
   connection.transaction.add_leading_header(
     'Received-SPF',
-    `${spf.result(result)} (${connection.local.host}: domain of ${host} ${des} ${connection.remote.ip} as permitted sender) receiver=${connection.local.host}; ${identity} helo=${connection.hello.host}; envelope-from=<${mfrom}>`,
+    `${spf.result(result)}\r
+\t(domain of ${host} ${des} ${connection.remote.ip} as permitted sender)\r
+\treceiver=${connection.local.host};\r
+\t${identity} helo=${connection.hello.host};\r
+\tenvelope-from=<${mfrom}>`,
   )
 }
 

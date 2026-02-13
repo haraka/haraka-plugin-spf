@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- style(header): fold the SPF header, remove redundant server name
+- test: update SPF test to no longer fail
+- dep(nopt): bump to v9
+
 ### [1.2.10] - 2025-08-24
 
 - index.js: light es6 refactor

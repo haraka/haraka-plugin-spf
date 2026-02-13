@@ -108,10 +108,10 @@ describe('SPF', function () {
     done()
   })
 
-  it('sets spf_record_include_match correctly', async function () {
+  it('sets spf_record includes', async function () {
     this.timeout = 3000
     this.SPF.count = 0
     await this.SPF.check_host('172.217.32.1', 'google.com')
-    assert.ok(this.SPF.spf_record_include_match?.['_netblocks.google.com'])
+    assert.ok(this.SPF.spf_record.includes('_spf.google.com'))
   })
 })
