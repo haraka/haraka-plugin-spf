@@ -1,4 +1,4 @@
-const assert = require('assert')
+const assert = require('node:assert')
 
 const SPF = require('../lib/spf').SPF
 
@@ -98,14 +98,12 @@ describe('SPF', function () {
     assert.equal(rc, this.SPF.SPF_PASS, 'pass')
   })
 
-  it('valid_ip, true', function (done) {
+  it('valid_ip, true', function () {
     assert.equal(this.SPF.valid_ip(':212.70.129.94'), true)
-    done()
   })
 
-  it('valid_ip, false', function (done) {
+  it('valid_ip, false', function () {
     assert.equal(this.SPF.valid_ip(':212.70.d.94'), false)
-    done()
   })
 
   it('sets spf_record includes', async function () {
