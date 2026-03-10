@@ -1,16 +1,8 @@
 name: publish
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - package.json
-
-permissions:
-  id-token: write
-  contents: write
-  packages: write
+  release:
+    types: [published]
 
 env:
   CI: true
