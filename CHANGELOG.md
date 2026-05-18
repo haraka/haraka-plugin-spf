@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.3.0] - 2026-05-19
+
+- changed: replaced address-rfc2821 with @haraka/email-address
 - fix: global dot-escape + (?:^|\.) boundary anchor
 - fix: mech_include catch now returns SPF_TEMPERROR and logs error
 - fix: pre-check changed to >= LIMIT (blocks the 11th)
@@ -12,6 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - feat: per-DNS-query timeout (configurable via `dns_timeout`)
 - feat: %{p} macro expands via fcrdns plugin's validated PTR (RFC 7208 §7.3)
 - doc: list `exp=` as unsupported in README
+- feat(spf): injectable DNS resolver so tests exercise the real resolver path
+  - replaces flaky public-DNS lookups (gmail/aexp/facebook/google)
+- changed: bump deps to latest
 - changed: remove unnecessary done callbacks in tests (#38)
 - changed: test runner is now node:test
 - feat(spf): injectable DNS resolver so tests exercise the real resolver path
@@ -137,3 +143,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.9]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.9
 [1.2.10]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.10
 [1.2.11]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.11
+[1.3.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.3.0

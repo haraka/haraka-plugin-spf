@@ -154,7 +154,7 @@ exports.hook_mail = async function (next, connection, params) {
     }
   }
 
-  const mfrom = params[0].address()
+  const mfrom = params[0].address
   const host = params[0].host
   let spf = this._configure_spf(new SPF(), connection)
   let auth_result
