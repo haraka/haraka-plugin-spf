@@ -1,115 +1,133 @@
 const assert = require('node:assert')
+const { describe, it, before, after, beforeEach } = require('node:test')
+
+const fixtures = require('haraka-test-fixtures')
 
 const SPF = require('../lib/spf').SPF
 
 SPF.prototype.log_debug = () => {} // noop, hush debug output
 
-beforeEach(function () {
-  this.SPF = new SPF()
+// A local fake DNS server (haraka-test-fixtures) serves these zones so the
+// real node:dns -> SPF path is exercised deterministically, without the
+// public-DNS flakiness the old gmail/aexp/facebook/google tests suffered.
+const ZONES = {
+  'pass.example': { txt: 'v=spf1 ip4:1.2.3.4 -all' },
+  'fail.example': { txt: 'v=spf1 ip4:1.2.3.4 -all' },
+  'softfail.example': { txt: 'v=spf1 ip4:1.2.3.4 ~all' },
+  'inc.example': { txt: 'v=spf1 include:_spf.inc.example -all' },
+  '_spf.inc.example': { txt: 'v=spf1 ip4:5.6.7.8 -all' },
+  'redir.example': { txt: 'v=spf1 redirect=_spf.redir.example' },
+  '_spf.redir.example': { txt: 'v=spf1 ip4:1.2.3.4 -all' },
+  'mx.example': {
+    mx: [
+      { preference: 10, exchange: 'mail1.mx.example' },
+      { preference: 20, exchange: 'mail2.mx.example' },
+    ],
+  },
+  'mail1.mx.example': { a: ['1.1.1.1'] },
+  'mail2.mx.example': { a: ['2.2.2.2'] },
+}
+
+let dns, restore, spfInst
+
+before(async () => {
+  dns = await fixtures.dns.start(ZONES)
+  // mech_mx() resolves MX via haraka-net-utils, which uses its own shared
+  // resolver -- point that at the fake server too.
+  restore = dns.patch(require('haraka-net-utils/lib/dns_config'))
 })
 
-describe('SPF', function () {
-  it('new SPF', function () {
-    assert.ok(this.SPF)
+after(async () => {
+  restore()
+  await dns.close()
+})
+
+beforeEach(() => {
+  spfInst = new SPF()
+  spfInst.resolver = dns.resolver()
+})
+
+describe('SPF', () => {
+  it('new SPF', () => {
+    assert.ok(spfInst)
   })
 
-  it('constants', function () {
-    assert.equal(1, this.SPF.SPF_NONE)
-    assert.equal(2, this.SPF.SPF_PASS)
-    assert.equal(3, this.SPF.SPF_FAIL)
-    assert.equal(4, this.SPF.SPF_SOFTFAIL)
-    assert.equal(5, this.SPF.SPF_NEUTRAL)
-    assert.equal(6, this.SPF.SPF_TEMPERROR)
-    assert.equal(7, this.SPF.SPF_PERMERROR)
-    assert.equal(10, this.SPF.LIMIT)
+  it('constants', () => {
+    assert.equal(1, spfInst.SPF_NONE)
+    assert.equal(2, spfInst.SPF_PASS)
+    assert.equal(3, spfInst.SPF_FAIL)
+    assert.equal(4, spfInst.SPF_SOFTFAIL)
+    assert.equal(5, spfInst.SPF_NEUTRAL)
+    assert.equal(6, spfInst.SPF_TEMPERROR)
+    assert.equal(7, spfInst.SPF_PERMERROR)
+    assert.equal(10, spfInst.LIMIT)
   })
 
-  it('mod_redirect, true', async function () {
-    this.SPF.been_there['example.com'] = true
-    const rc = await this.SPF.mod_redirect('example.com')
-    // assert.equal(null, err);
+  it('mod_redirect, true', async () => {
+    spfInst.been_there['example.com'] = true
+    const rc = await spfInst.mod_redirect('example.com')
     assert.equal(1, rc)
   })
 
-  it('mod_redirect, false', async function () {
-    this.timeout = 4000
-    this.SPF.count = 0
-    this.SPF.ip = '212.70.129.94'
-    this.SPF.mail_from = 'fraud@aexp.com'
+  it('mod_redirect, false', async () => {
+    spfInst.count = 0
+    spfInst.ip = '1.2.3.4'
+    spfInst.mail_from = 'fraud@redir.example'
 
-    const rc = await this.SPF.mod_redirect('aexp.com')
-    switch (rc) {
-      case 7:
-        // from time to time (this is the third time we've seen it,
-        // American Express publishes an invalid SPF record which results
-        // in a PERMERROR. Ignore it.
-        assert.equal(rc, 7, 'aexp SPF record is broken again')
-        break
-      case 6:
-        assert.equal(rc, 6, 'temporary (likely DNS timeout) error')
-        break
-      default:
-        assert.equal(rc, 3)
-    }
+    const rc = await spfInst.mod_redirect('redir.example')
+    assert.equal(rc, spfInst.SPF_PASS)
   })
 
-  it('resolves more than one IP in mech_mx', async function () {
-    this.timeout = 4000
-    this.SPF.domain = 'gmail.com'
-    this.SPF.ip_ver = 'ipv4'
+  it('resolves more than one IP in mech_mx', async () => {
+    spfInst.domain = 'mx.example'
+    spfInst.ip_ver = 'ipv4'
 
-    await this.SPF.mech_mx()
-    assert.equal(this.SPF._found_mx_addrs.length > 1, true)
+    await spfInst.mech_mx()
+    assert.equal(spfInst._found_mx_addrs.length, 2)
   })
 
-  it('check_host, gmail.com, fail', async function () {
-    this.timeout = 3000
-    this.SPF.count = 0
-    const rc = await this.SPF.check_host(
-      '212.70.129.94',
-      'gmail.com',
-      'haraka.mail@gmail.com',
+  it('check_host, pass', async () => {
+    spfInst.count = 0
+    const rc = await spfInst.check_host(
+      '1.2.3.4',
+      'pass.example',
+      'haraka@pass.example',
     )
-    switch (rc) {
-      case 1:
-        assert.equal(rc, 1, 'none')
-        console.log(
-          'Why do DNS lookup fail to find gmail SPF record on GitHub Actions?',
-        )
-        break
-      case 3:
-        assert.equal(rc, 3, 'fail')
-        break
-      case 4:
-        assert.equal(rc, 4, 'soft fail')
-        break
-      case 7:
-        assert.equal(rc, 7, 'perm error')
-        break
-      default:
-        assert.equal(rc, 4)
-    }
+    assert.equal(rc, spfInst.SPF_PASS, 'pass')
   })
 
-  it('check_host, facebook.com, pass', async function () {
-    this.timeout = 3000
-    this.SPF.count = 0
-    const rc = await this.SPF.check_host('69.171.232.145', 'facebookmail.com')
-    assert.equal(rc, this.SPF.SPF_PASS, 'pass')
+  it('check_host, fail', async () => {
+    spfInst.count = 0
+    const rc = await spfInst.check_host(
+      '9.9.9.9',
+      'fail.example',
+      'haraka@fail.example',
+    )
+    assert.equal(rc, spfInst.SPF_FAIL, 'fail')
   })
 
-  it('valid_ip, true', function () {
-    assert.equal(this.SPF.valid_ip(':212.70.129.94'), true)
+  it('check_host, softfail', async () => {
+    spfInst.count = 0
+    const rc = await spfInst.check_host(
+      '9.9.9.9',
+      'softfail.example',
+      'haraka@softfail.example',
+    )
+    assert.equal(rc, spfInst.SPF_SOFTFAIL, 'soft fail')
   })
 
-  it('valid_ip, false', function () {
-    assert.equal(this.SPF.valid_ip(':212.70.d.94'), false)
+  it('valid_ip, true', () => {
+    assert.equal(spfInst.valid_ip(':212.70.129.94'), true)
   })
 
-  it('sets spf_record includes', async function () {
-    this.timeout = 3000
-    this.SPF.count = 0
-    await this.SPF.check_host('172.217.32.1', 'google.com')
-    assert.ok(this.SPF.spf_record.includes('_spf.google.com'))
+  it('valid_ip, false', () => {
+    assert.equal(spfInst.valid_ip(':212.70.d.94'), false)
+  })
+
+  it('sets spf_record includes', async () => {
+    spfInst.count = 0
+    const rc = await spfInst.check_host('5.6.7.8', 'inc.example')
+    assert.equal(rc, spfInst.SPF_PASS, 'included record matched')
+    assert.ok(spfInst.spf_record.includes('include:_spf.inc.example'))
   })
 })
