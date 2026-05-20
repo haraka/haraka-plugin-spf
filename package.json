@@ -47,6 +47,7 @@
     "nopt": "^10.0.0"
   },
   "devDependencies": {
+    "address-rfc2821": "^2.2.0",
     "@haraka/eslint-config": "^2.0.4",
     "haraka-test-fixtures": "^1.6.0"
   },
