@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.11] - 2026-02-13
 
+- feat(DSN): update with modern DSN values
 - style(header): fold the SPF header, remove redundant server name
 - test: update SPF test to no longer fail, #36
 - dep(nopt): bump to v9

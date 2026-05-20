@@ -268,14 +268,13 @@ exports.return_results = function (
   const deny = connection.relaying ? 'deny_relay' : 'deny'
   const defer = connection.relaying ? 'defer_relay' : 'defer'
   const sender_id = scope === 'helo' ? connection.hello_host : sender
-  let text = DSN.sec_unauthorized(
-    `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}`,
-  )
+  const openspf_url = `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}`
+  let text
   switch (result) {
     case spf.SPF_NONE:
       if (this.cfg[deny][`${scope}_none`]) {
         text = this.cfg[deny].openspf_text
-          ? text
+          ? DSN.sec_unauthorized(openspf_url)
           : `${msgpre} SPF record not found`
         return next(DENY, text)
       }
@@ -285,24 +284,28 @@ exports.return_results = function (
       return next()
     case spf.SPF_SOFTFAIL:
       if (this.cfg[deny][`${scope}_softfail`]) {
-        text = this.cfg[deny].openspf_text ? text : `${msgpre} SPF SoftFail`
+        text = this.cfg[deny].openspf_text
+          ? DSN.sec_spf_fail(openspf_url)
+          : `${msgpre} SPF SoftFail`
         return next(DENY, text)
       }
       return next()
     case spf.SPF_FAIL:
       if (this.cfg[deny][`${scope}_fail`]) {
-        text = this.cfg[deny].openspf_text ? text : `${msgpre} SPF Fail`
+        text = this.cfg[deny].openspf_text
+          ? DSN.sec_spf_fail(openspf_url)
+          : `${msgpre} SPF Fail`
         return next(DENY, text)
       }
       return next()
     case spf.SPF_TEMPERROR:
       if (this.cfg[defer][`${scope}_temperror`]) {
-        return next(DENYSOFT, `${msgpre} SPF Temporary Error`)
+        return next(DENYSOFT, DSN.sec_spf_error(`${msgpre} SPF Temporary Error`))
       }
       return next()
     case spf.SPF_PERMERROR:
       if (this.cfg[deny][`${scope}_permerror`]) {
-        return next(DENY, `${msgpre} SPF Permanent Error`)
+        return next(DENY, DSN.sec_spf_fail(`${msgpre} SPF Permanent Error`))
       }
       return next()
     default:
