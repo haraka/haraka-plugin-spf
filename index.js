@@ -59,6 +59,20 @@ exports.load_spf_ini = function () {
 
   if (!this.cfg.relay) this.cfg.relay = { context: 'sender' }
   this.cfg.lookup_timeout = this.cfg.main.lookup_timeout || this.timeout - 1
+  // Per-DNS-query timeout (seconds). Smaller than lookup_timeout lets a
+  // single slow/black-holed query fail without burning the whole hook.
+  this.cfg.dns_timeout =
+    this.cfg.main.dns_timeout || Math.max(1, this.cfg.lookup_timeout - 1)
+}
+
+exports._configure_spf = function (spf, connection) {
+  spf.dns_timeout_ms = this.cfg.dns_timeout * 1000
+  // RFC 7208 §7.3: %{p} macro expands to a validated PTR name. Reuse
+  // the fcrdns plugin's forward-confirmed list if available; fall
+  // back to "unknown" otherwise.
+  const fcrdns = connection?.results?.get?.('fcrdns')
+  if (fcrdns?.fcrdns?.length) spf.p_name = fcrdns.fcrdns[0]
+  return spf
 }
 
 exports.helo_spf = async function (next, connection, helo) {
@@ -74,8 +88,8 @@ exports.helo_spf = async function (next, connection, helo) {
     return next()
   }
 
-  // RFC 4408, 2.1: "SPF clients must be prepared for the "HELO"
-  //           identity to be malformed or an IP address literal.
+  // RFC 7208 §2.3: SPF clients must be prepared for the HELO
+  // identity to be malformed or an IP address literal.
   if (net_utils.is_ip_literal(helo)) {
     connection.results.add(this, { skip: 'helo(ip_literal)' })
     return next()
@@ -86,7 +100,7 @@ exports.helo_spf = async function (next, connection, helo) {
   if (results && results.domain === helo) return next()
 
   let timeout = false
-  const spf = new SPF()
+  const spf = this._configure_spf(new SPF(), connection)
   const timer = setTimeout(() => {
     timeout = true
     connection.loginfo(this, 'timeout')
@@ -142,7 +156,7 @@ exports.hook_mail = async function (next, connection, params) {
 
   const mfrom = params[0].address()
   const host = params[0].host
-  let spf = new SPF()
+  let spf = this._configure_spf(new SPF(), connection)
   let auth_result
 
   if (connection.notes?.spf_helo) {
@@ -238,7 +252,7 @@ exports.hook_mail = async function (next, connection, params) {
     const spf_result = result ? spf.result(result).toLowerCase() : undefined
     if (spf_result && spf_result !== 'pass') {
       if (!my_public_ip) return ch_cb(new Error('failed to discover public IP'))
-      spf = new SPF()
+      spf = this._configure_spf(new SPF(), connection)
       const r = await spf.check_host(my_public_ip, host, mfrom)
       return ch_cb(null, r, my_public_ip)
     }
@@ -300,7 +314,10 @@ exports.return_results = function (
       return next()
     case spf.SPF_TEMPERROR:
       if (this.cfg[defer][`${scope}_temperror`]) {
-        return next(DENYSOFT, DSN.sec_spf_error(`${msgpre} SPF Temporary Error`))
+        return next(
+          DENYSOFT,
+          DSN.sec_spf_error(`${msgpre} SPF Temporary Error`),
+        )
       }
       return next()
     case spf.SPF_PERMERROR:

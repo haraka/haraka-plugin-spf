@@ -15,6 +15,11 @@ By default this plugin only adds Received-SPF headers to a message. There are op
 ; The lookup timeout, in seconds. Setting it lower is better.
 lookup_timeout = 29
 
+; Per-DNS-query timeout, in seconds. Bounds each individual DNS lookup so a
+; single slow or unresponsive resolver can't burn the whole lookup_timeout
+; budget. Defaults to lookup_timeout - 1.
+;dns_timeout = 28
+
 
 [relay]
 context=sender
@@ -118,7 +123,22 @@ openspf_text = true
   email lists which frequently break SPF. SPF results are best used as inputs
   to other plugins such as DMARC, [spamassassin](https://haraka.github.io/plugins/spamassassin), and [karma](http://haraka.github.io/plugins/karma).
 
-- Heed well the implications of SPF, as described in [RFC 4408](http://tools.ietf.org/html/rfc4408#section-9.3)
+- Heed well the implications of SPF, as described in [RFC 7208 §11](https://www.rfc-editor.org/rfc/rfc7208#section-11)
+
+### Unsupported RFC 7208 features
+
+The following parts of RFC 7208 are not implemented. None of these affect
+the SPF result (`Pass`/`Fail`/etc.); they only affect ancillary behaviour.
+
+- The `exp=` modifier (§6.2) is parsed and accepted but its explanation
+  string is never fetched or expanded. Senders that publish `exp=` will
+  not have their custom explanation reflected in rejection responses.
+
+The `%{p}` macro (§7.3) expands to the connecting IP's validated PTR
+name when the [fcrdns](https://github.com/haraka/haraka-plugin-fcrdns)
+plugin is loaded before this one and has produced a forward-confirmed
+result; otherwise it falls back to `unknown`. RFC 7208 §7.3 says "do
+not use" — implementation is for completeness only.
 
 ## Testing
 
