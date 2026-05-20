@@ -39,6 +39,32 @@ describe('load_spf_ini', () => {
   })
 })
 
+describe('_configure_spf', () => {
+  it('copies a validated fcrdns name into spf.p_name', () => {
+    const conn = {
+      results: {
+        get: (name) =>
+          name === 'fcrdns' ? { fcrdns: ['mta.sender.example'] } : null,
+      },
+    }
+    const out = plugin._configure_spf(new SPF(), conn)
+    assert.equal(out.p_name, 'mta.sender.example')
+  })
+
+  it('leaves p_name undefined when fcrdns has no validated names', () => {
+    const conn = {
+      results: { get: () => ({ fcrdns: [] }) },
+    }
+    const out = plugin._configure_spf(new SPF(), conn)
+    assert.equal(out.p_name, undefined)
+  })
+
+  it('is safe when connection has no results store', () => {
+    const out = plugin._configure_spf(new SPF(), undefined)
+    assert.equal(out.p_name, undefined)
+  })
+})
+
 describe('return_results', () => {
   it('result, none, reject=false', (t, done) => {
     plugin.cfg.deny.mfrom_none = false

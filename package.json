@@ -41,7 +41,7 @@
     "spf": "./bin/spf"
   },
   "dependencies": {
-    "haraka-dsn": "^1.1.0",
+    "haraka-dsn": "^1.2.0",
     "haraka-net-utils": "^1.8.2",
     "ipaddr.js": "^2.4.0",
     "nopt": "^10.0.0"

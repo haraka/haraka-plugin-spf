@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+- fix: global dot-escape + (?:^|\.) boundary anchor
+- fix: mech_include catch now returns SPF_TEMPERROR and logs error
+- fix: pre-check changed to >= LIMIT (blocks the 11th)
+- fix: README links stale RFC 4408 → RFC 7208
+- fix: enforce RFC 7208 §4.6.4 void-lookup limit (PermError after 2)
+- feat: per-DNS-query timeout (configurable via `dns_timeout`)
+- feat: %{p} macro expands via fcrdns plugin's validated PTR (RFC 7208 §7.3)
+- doc: list `exp=` as unsupported in README
 - changed: remove unnecessary done callbacks in tests (#38)
 - changed: test runner is now node:test
 - feat(spf): injectable DNS resolver so tests exercise the real resolver path
@@ -12,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.2.11] - 2026-02-13
 
+- feat(DSN): update with modern DSN values
 - style(header): fold the SPF header, remove redundant server name
 - test: update SPF test to no longer fail, #36
 - dep(nopt): bump to v9

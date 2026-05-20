@@ -59,6 +59,20 @@ exports.load_spf_ini = function () {
 
   if (!this.cfg.relay) this.cfg.relay = { context: 'sender' }
   this.cfg.lookup_timeout = this.cfg.main.lookup_timeout || this.timeout - 1
+  // Per-DNS-query timeout (seconds). Smaller than lookup_timeout lets a
+  // single slow/black-holed query fail without burning the whole hook.
+  this.cfg.dns_timeout =
+    this.cfg.main.dns_timeout || Math.max(1, this.cfg.lookup_timeout - 1)
+}
+
+exports._configure_spf = function (spf, connection) {
+  spf.dns_timeout_ms = this.cfg.dns_timeout * 1000
+  // RFC 7208 §7.3: %{p} macro expands to a validated PTR name. Reuse
+  // the fcrdns plugin's forward-confirmed list if available; fall
+  // back to "unknown" otherwise.
+  const fcrdns = connection?.results?.get?.('fcrdns')
+  if (fcrdns?.fcrdns?.length) spf.p_name = fcrdns.fcrdns[0]
+  return spf
 }
 
 exports.helo_spf = async function (next, connection, helo) {
@@ -74,8 +88,8 @@ exports.helo_spf = async function (next, connection, helo) {
     return next()
   }
 
-  // RFC 4408, 2.1: "SPF clients must be prepared for the "HELO"
-  //           identity to be malformed or an IP address literal.
+  // RFC 7208 §2.3: SPF clients must be prepared for the HELO
+  // identity to be malformed or an IP address literal.
   if (net_utils.is_ip_literal(helo)) {
     connection.results.add(this, { skip: 'helo(ip_literal)' })
     return next()
@@ -86,7 +100,7 @@ exports.helo_spf = async function (next, connection, helo) {
   if (results && results.domain === helo) return next()
 
   let timeout = false
-  const spf = new SPF()
+  const spf = this._configure_spf(new SPF(), connection)
   const timer = setTimeout(() => {
     timeout = true
     connection.loginfo(this, 'timeout')
@@ -142,7 +156,7 @@ exports.hook_mail = async function (next, connection, params) {
 
   const mfrom = params[0].address()
   const host = params[0].host
-  let spf = new SPF()
+  let spf = this._configure_spf(new SPF(), connection)
   let auth_result
 
   if (connection.notes?.spf_helo) {
@@ -238,7 +252,7 @@ exports.hook_mail = async function (next, connection, params) {
     const spf_result = result ? spf.result(result).toLowerCase() : undefined
     if (spf_result && spf_result !== 'pass') {
       if (!my_public_ip) return ch_cb(new Error('failed to discover public IP'))
-      spf = new SPF()
+      spf = this._configure_spf(new SPF(), connection)
       const r = await spf.check_host(my_public_ip, host, mfrom)
       return ch_cb(null, r, my_public_ip)
     }
@@ -268,14 +282,13 @@ exports.return_results = function (
   const deny = connection.relaying ? 'deny_relay' : 'deny'
   const defer = connection.relaying ? 'defer_relay' : 'defer'
   const sender_id = scope === 'helo' ? connection.hello_host : sender
-  let text = DSN.sec_unauthorized(
-    `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}`,
-  )
+  const openspf_url = `http://www.openspf.org/Why?s=${scope}&id=${sender_id}&ip=${connection.remote.ip}`
+  let text
   switch (result) {
     case spf.SPF_NONE:
       if (this.cfg[deny][`${scope}_none`]) {
         text = this.cfg[deny].openspf_text
-          ? text
+          ? DSN.sec_unauthorized(openspf_url)
           : `${msgpre} SPF record not found`
         return next(DENY, text)
       }
@@ -285,24 +298,31 @@ exports.return_results = function (
       return next()
     case spf.SPF_SOFTFAIL:
       if (this.cfg[deny][`${scope}_softfail`]) {
-        text = this.cfg[deny].openspf_text ? text : `${msgpre} SPF SoftFail`
+        text = this.cfg[deny].openspf_text
+          ? DSN.sec_spf_fail(openspf_url)
+          : `${msgpre} SPF SoftFail`
         return next(DENY, text)
       }
       return next()
     case spf.SPF_FAIL:
       if (this.cfg[deny][`${scope}_fail`]) {
-        text = this.cfg[deny].openspf_text ? text : `${msgpre} SPF Fail`
+        text = this.cfg[deny].openspf_text
+          ? DSN.sec_spf_fail(openspf_url)
+          : `${msgpre} SPF Fail`
         return next(DENY, text)
       }
       return next()
     case spf.SPF_TEMPERROR:
       if (this.cfg[defer][`${scope}_temperror`]) {
-        return next(DENYSOFT, `${msgpre} SPF Temporary Error`)
+        return next(
+          DENYSOFT,
+          DSN.sec_spf_error(`${msgpre} SPF Temporary Error`),
+        )
       }
       return next()
     case spf.SPF_PERMERROR:
       if (this.cfg[deny][`${scope}_permerror`]) {
-        return next(DENY, `${msgpre} SPF Permanent Error`)
+        return next(DENY, DSN.sec_spf_fail(`${msgpre} SPF Permanent Error`))
       }
       return next()
     default:
