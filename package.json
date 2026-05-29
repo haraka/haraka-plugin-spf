@@ -44,13 +44,13 @@
   },
   "dependencies": {
     "haraka-dsn": "^1.2.0",
-    "haraka-net-utils": "^1.8.2",
+    "haraka-net-utils": "^1.9.0",
     "ipaddr.js": "^2.4.0",
     "nopt": "^10.0.0"
   },
   "devDependencies": {
-    "@haraka/email-address": "^3.1.4",
-    "@haraka/eslint-config": "^2.0.4",
+    "@haraka/email-address": "^3.1.5",
+    "@haraka/eslint-config": "^3.0.0",
     "haraka-test-fixtures": "^1.7.0"
   },
   "prettier": {
