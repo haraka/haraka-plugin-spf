@@ -5,7 +5,7 @@ const { describe, it, beforeEach } = require('node:test')
 // npm modules
 const { Address } = require('@haraka/email-address')
 const constants = require('haraka-constants')
-const fixtures = require('haraka-test-fixtures')
+const { makeConnection, makePlugin } = require('haraka-test-fixtures')
 
 const SPF = require('../lib/spf').SPF
 const spf = new SPF()
@@ -14,7 +14,7 @@ let plugin
 let connection
 
 beforeEach(() => {
-  plugin = new fixtures.plugin('spf')
+  plugin = makePlugin('spf', { register: false })
 
   plugin.timeout = 8000
   plugin.load_spf_ini()
@@ -22,8 +22,7 @@ beforeEach(() => {
   // comment this line to see detailed SPF evaluation
   plugin.SPF.prototype.log_debug = () => {}
 
-  connection = fixtures.connection.createConnection()
-  connection.init_transaction()
+  connection = makeConnection({ withTxn: true })
 })
 
 describe('spf', () => {
