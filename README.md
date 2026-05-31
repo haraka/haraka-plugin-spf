@@ -1,7 +1,6 @@
-[![CI Test Status][ci-img]][ci-url]
-[![Code Climate][clim-img]][clim-url]
-
 # haraka-plugin-spf
+
+[![Test][ci-img]][ci-url] [![Cover][cov-img]][cov-url] [![Qlty][qlty-img]][qlty-url]
 
 This plugin implements the Sender Policy Framework (SPF). See the [Wikipedia article on SPF](http://en.wikipedia.org/wiki/Sender_Policy_Framework) and [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208) for details.
 
@@ -168,5 +167,7 @@ Node does not support the SPF DNS Resource Record type. Only TXT records are che
 
 [ci-img]: https://github.com/haraka/haraka-plugin-spf/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/haraka/haraka-plugin-spf/actions/workflows/ci.yml
-[clim-img]: https://codeclimate.com/github/haraka/haraka-plugin-spf/badges/gpa.svg
-[clim-url]: https://codeclimate.com/github/haraka/haraka-plugin-spf
+[cov-img]: https://codecov.io/github/haraka/haraka-plugin-spf/coverage.svg
+[cov-url]: https://codecov.io/github/haraka/haraka-plugin-spf
+[qlty-img]: https://qlty.sh/gh/haraka/projects/haraka-plugin-spf/maintainability.svg
+[qlty-url]: https://qlty.sh/gh/haraka/projects/haraka-plugin-spf
