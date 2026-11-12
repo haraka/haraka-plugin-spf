@@ -120,7 +120,7 @@ openspf_text = true
   reject messages that explicitely fail SPF tests. SPF failures have a high
   correlation with spam. However, up to 10% of ham transits forwarders and/or
   email lists which frequently break SPF. SPF results are best used as inputs
-  to other plugins such as DMARC, [spamassassin](https://haraka.github.io/plugins/spamassassin), and [karma](http://haraka.github.io/plugins/karma).
+  to other plugins such as DMARC, [spamassassin](https://github.com/haraka/haraka-plugin-spamassassin), and [karma](https://github.com/haraka/haraka-plugin-karma).
 
 - Heed well the implications of SPF, as described in [RFC 7208 §11](https://www.rfc-editor.org/rfc/rfc7208#section-11)
 
