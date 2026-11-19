@@ -272,7 +272,7 @@ describe('hook_helo', () => {
   })
 
   it('IPv4 literal', (t, done) => {
-    connection.remote.ip = '190.168.1.1'
+    connection = makeConnection({ withTxn: true, ip: '190.168.1.1' })
     plugin.helo_spf(
       function next(rc) {
         assert.equal(undefined, rc)
@@ -284,7 +284,7 @@ describe('hook_helo', () => {
   })
 
   it('MX with no A record', { timeout: 5000 }, (t, done) => {
-    connection.set('remote.ip', '192.0.2.0')
+    connection = makeConnection({ withTxn: true, ip: '192.0.2.0' })
     plugin.helo_spf(
       function next(rc) {
         assert.equal(undefined, rc)
@@ -300,8 +300,8 @@ const test_addr = new Address('<test@example.com>')
 
 describe('hook_mail', { timeout: 5000 }, () => {
   it('rfc1918', (t, done) => {
+    connection = makeConnection({ withTxn: true, ip: '192.168.1.1' })
     connection.set('remote.is_private', true)
-    connection.set('remote.ip', '192.168.1.1')
     plugin.hook_mail(
       function next() {
         assert.equal(undefined, arguments[0])
@@ -313,9 +313,12 @@ describe('hook_mail', { timeout: 5000 }, () => {
   })
 
   it('rfc1918 relaying', (t, done) => {
+    connection = makeConnection({
+      withTxn: true,
+      ip: '192.168.1.1',
+      relaying: true,
+    })
     connection.set('remote.is_private', true)
-    connection.set('remote.ip', '192.168.1.1')
-    connection.relaying = true
     plugin.hook_mail(
       function next() {
         assert.ok([undefined, constants.CONT].includes(arguments[0]))
@@ -327,8 +330,7 @@ describe('hook_mail', { timeout: 5000 }, () => {
   })
 
   it('no txn', (t, done) => {
-    connection.remote.ip = '207.85.1.1'
-    delete connection.transaction
+    connection = makeConnection({ ip: '207.85.1.1' })
     plugin.hook_mail(function next() {
       assert.equal(undefined, arguments[0])
       assert.equal(undefined, arguments[1])
@@ -338,7 +340,7 @@ describe('hook_mail', { timeout: 5000 }, () => {
 
   it('txn, no helo', (t, done) => {
     plugin.cfg.deny.mfrom_fail = false
-    connection.set('remote.ip', '207.85.1.1')
+    connection = makeConnection({ withTxn: true, ip: '207.85.1.1' })
     plugin.hook_mail(
       function next() {
         assert.equal(undefined, arguments[0])
@@ -351,7 +353,7 @@ describe('hook_mail', { timeout: 5000 }, () => {
   })
 
   it('txn', (t, done) => {
-    connection.set('remote.ip', '207.85.1.1')
+    connection = makeConnection({ withTxn: true, ip: '207.85.1.1' })
     connection.set('hello.host', 'mail.example.com')
     plugin.hook_mail(
       function next(rc) {
@@ -364,8 +366,11 @@ describe('hook_mail', { timeout: 5000 }, () => {
   })
 
   it('txn, relaying', (t, done) => {
-    connection.set('remote.ip', '207.85.1.1')
-    connection.set('relaying', true)
+    connection = makeConnection({
+      withTxn: true,
+      ip: '207.85.1.1',
+      relaying: true,
+    })
     connection.set('hello.host', 'mail.example.com')
     plugin.hook_mail(
       function next(rc) {
@@ -380,9 +385,12 @@ describe('hook_mail', { timeout: 5000 }, () => {
   it('txn, relaying, is_private', { timeout: 12000 }, (t, done) => {
     plugin.cfg.relay.context = 'myself'
     plugin.cfg.deny_relay.mfrom_fail = true
-    connection.set('remote.ip', '127.0.1.1')
+    connection = makeConnection({
+      withTxn: true,
+      ip: '127.0.1.1',
+      relaying: true,
+    })
     connection.set('remote.is_private', true)
-    connection.relaying = true
     connection.set('hello.host', 'www.tnpi.net')
     plugin.nu.public_ip = '66.128.51.165'
     plugin.hook_mail(
