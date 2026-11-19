@@ -335,11 +335,12 @@ exports.save_to_header = (connection, spf, result, mfrom, host, id, ip) => {
   if (!connection?.transaction) return
 
   const des = result === spf.SPF_PASS ? 'designates' : 'does not designate'
-  const identity = `identity=${id}; client-ip=${ip || connection.remote.ip}`
+  const checked_ip = ip || connection.remote.ip
+  const identity = `identity=${id}; client-ip=${checked_ip}`
   connection.transaction.add_leading_header(
     'Received-SPF',
     `${spf.result(result)}\r
-\t(domain of ${host} ${des} ${connection.remote.ip} as permitted sender)\r
+\t(domain of ${host} ${des} ${checked_ip} as permitted sender)\r
 \treceiver=${connection.local.host};\r
 \t${identity} helo=${connection.hello.host};\r
 \tenvelope-from=<${mfrom}>`,

@@ -258,6 +258,36 @@ describe('return_results', () => {
   })
 })
 
+describe('save_to_header', () => {
+  const saveHeader = (ip) => {
+    connection = makeConnection({ withTxn: true, ip: '172.16.16.14' })
+    connection.set('hello.host', 'vhost0.example.com')
+    plugin.save_to_header(
+      connection,
+      spf,
+      spf.SPF_PASS,
+      'user@example.com',
+      'example.com',
+      'mailfrom',
+      ip,
+    )
+    return connection.transaction.header.get('Received-SPF')
+  }
+
+  it('names the checked IP when it differs from the client IP', () => {
+    const header = saveHeader('66.128.51.165')
+    assert.match(header, /designates 66\.128\.51\.165 as permitted sender/)
+    assert.match(header, /client-ip=66\.128\.51\.165/)
+    assert.doesNotMatch(header, /172\.16\.16\.14/)
+  })
+
+  it('names the client IP by default', () => {
+    const header = saveHeader()
+    assert.match(header, /designates 172\.16\.16\.14 as permitted sender/)
+    assert.match(header, /client-ip=172\.16\.16\.14/)
+  })
+})
+
 describe('hook_helo', () => {
   it('rfc1918', (t, done) => {
     let completed = 0
