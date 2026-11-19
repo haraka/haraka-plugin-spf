@@ -43,15 +43,15 @@
     "spf": "./bin/spf"
   },
   "dependencies": {
-    "haraka-dsn": "^1.2.0",
-    "haraka-net-utils": "^1.9.0",
-    "ipaddr.js": "^2.4.0",
-    "nopt": "^10.0.0"
+    "haraka-dsn": "^1.2.1",
+    "haraka-net-utils": "^1.10.0",
+    "ipaddr.js": "^2.5.0",
+    "nopt": "^10.0.1"
   },
   "devDependencies": {
-    "@haraka/email-address": "^3.1.5",
+    "@haraka/email-address": "^3.1.7",
     "@haraka/eslint-config": "^3.0.0",
-    "haraka-test-fixtures": "^1.7.0"
+    "haraka-test-fixtures": "^1.7.2"
   },
   "prettier": {
     "singleQuote": true,

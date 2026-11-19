@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - doc: link spamassassin and karma to their repos
 - test: refactored against test-fixtures 1.7.0
+- fix: Received-SPF comment names the checked IP
 
 ### [1.3.0] - 2026-05-19
 
