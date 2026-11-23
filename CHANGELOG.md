@@ -6,21 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [1.3.1] - 2026-11-22
 
-#### Fixed
-
-- Received-SPF comment names the checked IP (#45)
-
-#### Changed
-
-- refactored against test-fixtures 1.7.0 (#43)
-
-#### Other
-
 - doc: link spamassassin and karma to their repos (#44)
-
-- doc: link spamassassin and karma to their repos
-- test: refactored against test-fixtures 1.7.0
-- fix: Received-SPF comment names the checked IP
+- test: refactored against test-fixtures 1.7.0 (#43)
+- fix: Received-SPF comment names the checked IP (#45)
 - fix: quote smtp.helo/mailfrom in Auth-Results
 - deps(utils): add haraka-utils 2.3.0
 
