@@ -4,9 +4,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
 
+### [1.3.1] - 2026-11-22
+
+#### Fixed
+
+- Received-SPF comment names the checked IP (#45)
+
+#### Changed
+
+- refactored against test-fixtures 1.7.0 (#43)
+
+#### Other
+
+- doc: link spamassassin and karma to their repos (#44)
+
 - doc: link spamassassin and karma to their repos
 - test: refactored against test-fixtures 1.7.0
 - fix: Received-SPF comment names the checked IP
+- fix: quote smtp.helo/mailfrom in Auth-Results
+- deps(utils): add haraka-utils 2.3.0
 
 ### [1.3.0] - 2026-05-19
 
@@ -148,3 +164,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 [1.2.10]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.10
 [1.2.11]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.2.11
 [1.3.0]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.3.0
+[1.3.1]: https://github.com/haraka/haraka-plugin-spf/releases/tag/v1.3.1
