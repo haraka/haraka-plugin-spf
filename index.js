@@ -3,6 +3,7 @@
 const SPF = require('./lib/spf').SPF
 const net_utils = require('haraka-net-utils')
 const DSN = require('haraka-dsn')
+const utils = require('haraka-utils')
 
 exports.SPF = SPF
 
@@ -167,7 +168,9 @@ exports.hook_mail = async function (next, connection, params) {
     if (!host) {
       // Use results from HELO if the return-path is null
       auth_result = spf.result(h_result).toLowerCase()
-      connection.auth_results(`spf=${auth_result} smtp.helo=${h_host}`)
+      connection.auth_results(
+        `spf=${auth_result} smtp.helo=${utils.auth_results_value(h_host)}`,
+      )
 
       const sender = `<> via ${h_host}`
       return this.return_results(
@@ -220,7 +223,9 @@ exports.hook_mail = async function (next, connection, params) {
     )
 
     auth_result = spf.result(result).toLowerCase()
-    connection.auth_results(`spf=${auth_result} smtp.mailfrom=${host}`)
+    connection.auth_results(
+      `spf=${auth_result} smtp.mailfrom=${utils.auth_results_value(host)}`,
+    )
 
     txn.notes.spf_mail_result = spf.result(result)
     txn.notes.spf_mail_record = spf.spf_record

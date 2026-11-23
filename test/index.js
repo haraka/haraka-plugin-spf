@@ -433,3 +433,49 @@ describe('hook_mail', { timeout: 5000 }, () => {
     )
   })
 })
+
+describe('Authentication-Results', () => {
+  let fragments
+
+  beforeEach(() => {
+    plugin.cfg.deny.mfrom_fail = false
+    plugin.cfg.deny.helo_fail = false
+    const configure = plugin._configure_spf.bind(plugin)
+    plugin._configure_spf = (spf, conn) => {
+      spf.resolver = {
+        resolveTxt: () => Promise.reject({ code: 'ENOTFOUND' }),
+      }
+      return configure(spf, conn)
+    }
+    connection = makeConnection({ withTxn: true, ip: '207.85.1.1' })
+    fragments = []
+    connection.auth_results = (msg) => fragments.push(msg)
+  })
+
+  const run_hook_mail = (addr) =>
+    new Promise((resolve) => plugin.hook_mail(resolve, connection, [addr]))
+
+  it('leaves a domain-name smtp.mailfrom bare', async () => {
+    await run_hook_mail(new Address('<test@example.com>'))
+    assert.deepEqual(fragments, ['spf=none smtp.mailfrom=example.com'])
+  })
+
+  it('quotes an address-literal smtp.mailfrom carrying resinfo', async () => {
+    await run_hook_mail(new Address('<x@[tag:a;dkim=pass]>'))
+    assert.deepEqual(fragments, ['spf=none smtp.mailfrom="[tag:a;dkim=pass]"'])
+  })
+
+  it('leaves a domain-name smtp.helo bare', async () => {
+    connection.set('hello.host', 'mail.example.com')
+    connection.notes.spf_helo = spf.SPF_NONE
+    await run_hook_mail(new Address('<>'))
+    assert.deepEqual(fragments, ['spf=none smtp.helo=mail.example.com'])
+  })
+
+  it('quotes a HELO carrying resinfo', async () => {
+    connection.set('hello.host', 'x;dkim=pass;dmarc=pass')
+    connection.notes.spf_helo = spf.SPF_NONE
+    await run_hook_mail(new Address('<>'))
+    assert.deepEqual(fragments, ['spf=none smtp.helo="x;dkim=pass;dmarc=pass"'])
+  })
+})
